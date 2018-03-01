@@ -22,7 +22,7 @@ public class SemiPrime {
              BigInteger r = BigInteger.ZERO.setBit(n.bitLength()/3);    //Set r equal to ZERO of appropriate length
              for(BigDecimal s = BigDecimal.ZERO;                        //Set s equal to ZERO, different from r
                  !r.equals(s.toBigInteger());                           //Is r != s?
-                 s=new BigDecimal(r)                                    //Set s equal to BigDecimal(r)
+                 s=new BigDecimal(r),                                   //Set s equal to BigDecimal(r)
                  r=new BigDecimal(r.shiftLeft(1))                       //Do some interesting math on r
                  .add(m.divide(s.multiply(s),UP))
                  .divide(THREE_D,UP)

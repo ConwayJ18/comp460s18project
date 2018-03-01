@@ -6,11 +6,22 @@ class Driver {
 
     public static void main(String[] args)
     {
-        Scanner kbReader = new Scanner(System.in);
-        System.out.println("Please enter a number for testing: "); //Ask for test number
-        BigInteger testNumber = kbReader.nextBigInteger(); //Call that number "testNumber"
-
-        System.out.println(testNumber + " is probably prime? " + MillerRabin.isProbablePrime(testNumber, 40)); //Test for primality
-        System.out.println(testNumber + " is semiPrime? " + SemiPrime.isSemiPrime(testNumber)); //Test if semiPrime
+        boolean running = true;
+    
+        while(running)
+        {
+            Scanner kbReader = new Scanner(System.in);
+            System.out.println("Please enter a number for testing. To quit, type 0: "); //Ask for test number
+            BigInteger testNumber = kbReader.nextBigInteger(); //Call that number "testNumber"
+            if(testNumber.equals(BigInteger.ZERO))
+            {
+                System.out.println("Program terminated.");
+                running=false;
+            } else
+            {
+                System.out.println(testNumber + " is probably prime? " + MillerRabin.isProbablePrime(testNumber, 40)); //Test for primality
+                System.out.println(testNumber + " is semi-prime? " + SemiPrime.isSemiPrime(testNumber)); //Test if semiPrime
+            }  
+        }
     }
 }
