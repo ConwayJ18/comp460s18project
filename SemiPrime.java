@@ -18,16 +18,20 @@ public class SemiPrime {
 
     public static BigInteger cubeRoot(BigInteger n) //Calculates cube roots
     {
-             BigDecimal m = new BigDecimal(n);                          //Copy the original value
-             BigInteger r = BigInteger.ZERO.setBit(n.bitLength()/3);    //Set r equal to ZERO of appropriate length
-             for(BigDecimal s = BigDecimal.ZERO;                        //Set s equal to ZERO, different from r
-                 !r.equals(s.toBigInteger());                           //Is r != s?
-                 s=new BigDecimal(r),                                   //Set s equal to BigDecimal(r)
-                 r=new BigDecimal(r.shiftLeft(1))                       //Do some interesting math on r
-                 .add(m.divide(s.multiply(s),UP))
-                 .divide(THREE_D,UP)
-                 .toBigInteger());                                      //Then convert r back to BigInt
-             return r;                                                  //Finally return r
+        BigDecimal nCopy = new BigDecimal(n); //Create copy of n
+        BigInteger result = BigInteger.ZERO.setBit(n.bitLength()/3); //Guess bitLength of result
+        BigDecimal s = BigDecimal.ZERO; //Set s equal to 0
+        while (!result.equals(s.toBigInteger())) //Is result equal to s?
+        {
+            s = new BigDecimal(result); //Set s equal to BigDecimal version of result
+        
+            BigDecimal temp0 = new BigDecimal(result.shiftLeft(1)); //Do some math
+            BigDecimal temp1 = temp0.add(nCopy.divide(s.multiply(s), UP));
+            BigDecimal temp2 = temp1.divide(THREE_D, UP);
+            
+            result = temp2.toBigInteger(); //Convert things back to BigInteger
+        }
+        return result;  //Finally return r
     }
 
     public static boolean manyFactors(BigInteger n) //How many factors does n have?
