@@ -7,7 +7,7 @@ class Driver {
     public static void main(String[] args)
     {
         boolean running = true;
-    
+
         while(running)
         {
             Scanner kbReader = new Scanner(System.in);
@@ -19,9 +19,9 @@ class Driver {
                 running=false;
             } else
             {
-                System.out.println(testNumber + " is probably prime? " + MillerRabin.isProbablePrime(testNumber, 40)); //Test for primality
+                System.out.println(testNumber + " is composite? " + !MillerRabin.isProbablePrime(testNumber, 40)); //Test for primality
                 System.out.println(testNumber + " is semi-prime? " + SemiPrime.isSemiPrime(testNumber)); //Test if semiPrime
-            }  
+            }
         }
     }
 }
