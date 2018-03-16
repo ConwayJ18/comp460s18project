@@ -1,3 +1,5 @@
+package src.semiprime;
+
 import java.math.*;
 import java.util.Random;
 
@@ -24,11 +26,11 @@ public class SemiPrime {
         while (!result.equals(s.toBigInteger())) //Is result equal to s?
         {
             s = new BigDecimal(result); //Set s equal to BigDecimal version of result
-        
+
             BigDecimal temp0 = new BigDecimal(result.shiftLeft(1)); //Do some math
             BigDecimal temp1 = temp0.add(nCopy.divide(s.multiply(s), UP));
             BigDecimal temp2 = temp1.divide(THREE_D, UP);
-            
+
             result = temp2.toBigInteger(); //Convert things back to BigInteger
         }
         return result;  //Finally return r

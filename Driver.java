@@ -1,6 +1,9 @@
 import java.io.*;
 import java.util.*;
 import java.math.*;
+import src.millerrabin.*;
+import src.semiprime.*;
+import src.quadraticsieve.*;
 
 class Driver {
 
