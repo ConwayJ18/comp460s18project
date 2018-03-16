@@ -2,6 +2,7 @@ package src.semiprime;
 
 import java.math.*;
 import java.util.Random;
+import src.millerrabin.*;
 
 public class SemiPrime {
     public static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
