@@ -3,7 +3,7 @@ import java.util.*;
 import java.math.*;
 import src.millerrabin.*;
 import src.semiprime.*;
-import src.quadraticsieve.*;
+import src.dixon.*;
 
 class Driver {
 
@@ -22,8 +22,17 @@ class Driver {
                 running=false;
             } else
             {
-                System.out.println(testNumber + " is composite? " + !MillerRabin.isProbablePrime(testNumber, 40)); //Test for primality
-                System.out.println(testNumber + " is semi-prime? " + SemiPrime.isSemiPrime(testNumber)); //Test if semiPrime
+                boolean isComposite = !MillerRabin.isProbablePrime(testNumber, 40);
+                System.out.println(testNumber + " is composite? " + isComposite); //Test for primality
+                if(isComposite)
+                {
+                  System.out.println(testNumber + " is semi-prime? " + SemiPrime.isSemiPrime(testNumber)); //Test if semiPrime
+                  System.out.println("The factors of " + testNumber + " are " + Dixon.dixon(testNumber)); //List factors
+                }
+                else
+                {
+                  System.out.println("The number is prime and thus cannot be semi-prime. It's factors are 1 & itself.");
+                }
             }
         }
     }
