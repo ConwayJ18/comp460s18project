@@ -238,7 +238,7 @@ public class Dixon {
 
     public static void main(String args[])
     {
-  		String[] nonPrimes = { "22", "333", "4444", "55555", "666666", "7777777" }; //Known composites
+  		String[] nonPrimes = { "22", "333", "4444", "55555", "666666", "7777777" }; //Digits are same as number it's made of
   		for (String n : nonPrimes) //For each composite
       {
           BigInteger testComposite = new BigInteger(n);
