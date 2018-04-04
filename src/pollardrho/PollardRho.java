@@ -20,11 +20,6 @@ public class PollardRho {
           b = b.add(BigInteger.ONE);
           b = b.mod(n);
 
-          //b <- b^2+1 mod n
-          b = b.pow(2);
-          b = b.add(BigInteger.ONE);
-          b = b.mod(n);
-
           //d = gcd(a-b, n)
           d = a;
           d = d.subtract(b);
