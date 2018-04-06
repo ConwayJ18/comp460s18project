@@ -1,4 +1,4 @@
-//package src.logicalmatrix;
+package src.logicalmatrix;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +26,8 @@ public class LogicalMatrixMultiply extends Thread {
                }
            }
        }
+
+       print();
   }
 
   public static void print(){
@@ -43,6 +45,65 @@ public class LogicalMatrixMultiply extends Thread {
            }
            System.out.println();
     }
+  }
+
+  public static void testFromDriver(int testNumber)
+  {
+    threads = 1; //Number of threads
+    n = testNumber; //Size of matrixes
+    Random rand = new Random();
+    A=new boolean[n][n];
+    B=new boolean[n][n];
+    C=new boolean[n][n];
+    LogicalMatrixMultiply[] thrd = new LogicalMatrixMultiply[threads];
+
+    //Create A
+    for(int i=0;i<n;i++)
+    {
+      for(int j=0;j<n;j++)
+      {
+          A[i][j]=rand.nextBoolean();
+      }
+    }
+    System.out.println("Matrix A generated.");
+
+    //Create B
+    for(int i=0;i<n;i++)
+    {
+      for(int j=0;j<n;j++)
+      {
+         B[i][j]=rand.nextBoolean();
+      }
+    }
+    System.out.println("Matrix B generated.");
+
+    //Start clock
+    long startTime = System.currentTimeMillis();
+
+    //Run calculation
+    for(int i=0;i<threads;i++)
+    {
+       thrd[i] = new LogicalMatrixMultiply(i);
+       thrd[i].start();
+    }
+
+    for(int i=0;i<threads;i++)
+    {
+          try
+          {
+              thrd[i].join();
+          }
+          catch(InterruptedException e){}
+    }
+
+    //Stop clock
+    long endTime = System.currentTimeMillis();
+
+    //Calculate time elapsed
+    long timeElapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+
+    //Print results
+    System.out.println("The calculation of the matrix of dimension " + n + " took " + timeElapsedSeconds + " seconds.");
   }
 
 	public static void main(String[] args) //For testing
@@ -102,7 +163,5 @@ public class LogicalMatrixMultiply extends Thread {
 
     //Print results
     System.out.println("The calculation of the matrix of dimension " + n + " took " + timeElapsedSeconds + " seconds.");
-
-    print();
   }
 }

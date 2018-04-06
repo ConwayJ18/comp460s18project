@@ -243,6 +243,13 @@ public class Dixon implements Runnable {
         }
     }
 
+    public static void runFromDriver(BigInteger testNumber)
+    {
+        String m = testNumber.toString();
+        Dixon d2=new Dixon(m);
+        d2.start();
+    }
+
     public static void main(String args[])
     {
   		String[] nonPrimes = { "22", "333", "4444", "55555", "66666", "77777" }; //Known composites
@@ -250,8 +257,8 @@ public class Dixon implements Runnable {
       {
           Dixon d1=new Dixon(n);
           d1.start();
-  		/*BigInteger testComposite = new BigInteger(n);
-          System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));*/
+  		    //BigInteger testComposite = new BigInteger(n);
+          //System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));
       }
     }
 
@@ -273,7 +280,8 @@ public class Dixon implements Runnable {
 	@Override
 	public void run() {
 
-		dixon(testComposite);
+		System.out.println(dixon(testComposite));
+
 
 	}
 }
