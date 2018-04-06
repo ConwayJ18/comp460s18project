@@ -5,6 +5,7 @@ import src.millerrabin.*;
 import src.semiprime.*;
 import src.dixon.*;
 import src.pollardrho.*;
+import src.logicalmatrix.*;
 
 class Driver {
 
@@ -17,23 +18,24 @@ class Driver {
         while(running)
         {
             Scanner kbReader = new Scanner(System.in);
-            System.out.println("Please enter a number for testing. To quit, type 0: "); //Ask for test number
-            BigInteger testNumber = kbReader.nextBigInteger(); //Call that number "testNumber"
-            if(testNumber.equals(BigInteger.ZERO))
+            System.out.println("Please enter a number for factor testing. To quit, type 0: "); //Ask for test number
+            BigInteger testFactor = kbReader.nextBigInteger(); //Call that number "testFactor"
+            if(testFactor.equals(BigInteger.ZERO))
             {
                 System.out.println("Program terminated.");
                 running=false;
             } else
             {
-                boolean isComposite = !MillerRabin.isProbablePrime(testNumber, 40);
-                System.out.println(testNumber + " is composite? " + isComposite); //Test for primality
+                boolean isComposite = !MillerRabin.isProbablePrime(testFactor, 40);
+                System.out.println(testFactor + " is composite? " + isComposite); //Test for primality
                 if(isComposite)
                 {
-                  System.out.println(testNumber + " is semi-prime? " + SemiPrime.isSemiPrime(testNumber)); //Run SemiPrime
-                  System.out.println("The factors of " + testNumber + " via Pollard-Rho are " + PollardRho.pollardRho(testNumber)); //Run PollardRho
-                  if(testNumber.compareTo(MAX_Dixon) <= 0)
+                  System.out.println(testFactor + " is semi-prime? " + SemiPrime.isSemiPrime(testFactor)); //Run SemiPrime
+                  System.out.println("The factors of " + testFactor + " via Pollard-Rho are " + PollardRho.pollardRho(testFactor)); //Run PollardRho
+                  if(testFactor.compareTo(MAX_Dixon) <= 0)
                   {
-                    System.out.println("The factors of " + testNumber + " via Dixon are " + Dixon.dixon(testNumber)); //Run Dixon
+                    System.out.println("The factors of " + testFactor + " via Dixon on a single thread are " + DixonSingleThread.dixon(testFactor)); //Run DixonSingleThread
+                    System.out.println("The factors of " + testFactor + " via Dixon on multiple threads are " + Dixon.runFromDriver(testFactor)); //Run DixonSingleThread
                   }
                   else
                   {
@@ -45,6 +47,17 @@ class Driver {
                   System.out.println("The number is prime and thus cannot be semi-prime. It's factors are 1 & itself.");
                 }
             }
+            System.out.println("Please enter a number for matrix testing. To quit, type 0: "); //Ask for test number
+            int testMatrix = kbReader.nextInt();
+            if(testMatrix == 0)
+            {
+                System.out.println("Program terminated.");
+                running=false;
+            } else
+            {
+                LogicalMatrixMultiply.testFromDriver(testMatrix);
+            }
+
         }
     }
 }
