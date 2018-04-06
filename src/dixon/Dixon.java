@@ -1,4 +1,4 @@
-package src.dixon;
+//package src.dixon;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +8,13 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class Dixon {
+public class Dixon implements Runnable {
 
     public static int level = 0;
     public static final int RANDOM_POWER = 15;
     public static ArrayList<BigInteger> primes = new ArrayList<BigInteger>();
+    BigInteger testComposite;
+    private Thread t;
 
     public static int primeCounter(BigInteger n) {
         int i=0;
@@ -28,6 +30,7 @@ public class Dixon {
     }
 
     public static String dixon(BigInteger n) {
+    	long startTime = System.nanoTime();
         level++;
         int factorBase = primeCounter(n);
         Random generator = new Random();
@@ -95,6 +98,10 @@ public class Dixon {
         int[][] iAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, true);
         int[][] cAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, false);
 
+
+        long duration = (System.nanoTime() - startTime);
+        double seconds = (double)duration / 1000000000.0;
+        System.out.println("Time taken to generate factor base for input value :"+n+" in seconds is "+ seconds);
         return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
     }
 
@@ -238,11 +245,35 @@ public class Dixon {
 
     public static void main(String args[])
     {
-  		String[] nonPrimes = { "22", "333", "4444", "55555", "666666", "7777777" }; //Digits are same as number it's made of
+  		String[] nonPrimes = { "22", "333", "4444", "55555", "66666", "77777" }; //Known composites
   		for (String n : nonPrimes) //For each composite
       {
-          BigInteger testComposite = new BigInteger(n);
-          System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));
+          Dixon d1=new Dixon(n);
+          d1.start();
+  		/*BigInteger testComposite = new BigInteger(n);
+          System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));*/
       }
     }
+
+
+
+    Dixon(String input){
+    	 testComposite=new BigInteger(input);
+
+    }
+
+    public void start () {
+        System.out.println("Starting new thread for input " +  testComposite );
+        if (t == null) {
+           t = new Thread (this);
+           t.start ();
+        }
+     }
+
+	@Override
+	public void run() {
+
+		dixon(testComposite);
+
+	}
 }
