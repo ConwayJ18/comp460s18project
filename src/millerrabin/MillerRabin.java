@@ -3,13 +3,15 @@ package src.millerrabin;
 import java.math.BigInteger;
 import java.util.Random;
 
-public class MillerRabin {
+public class MillerRabin implements Runnable{
 
 	private static final BigInteger ZERO = BigInteger.ZERO; //BigInteger copy of ZERO
 	private static final BigInteger ONE = BigInteger.ONE; //Same for ONE
 	private static final BigInteger TWO = new BigInteger("2"); //TWO
 	private static final BigInteger THREE = new BigInteger("3"); //And THREE
 	private static final int degreeOfCertainty = 40; //Higher numbers reduce chance of false-positive
+	BigInteger testComposite;
+    private Thread t;
 
 	public static boolean isProbablePrime(BigInteger n, int degreeOfCertainty) //The actual calculator
 	{
@@ -69,30 +71,45 @@ public class MillerRabin {
   {
   		String[] primes = { "2", "3", "3613", "7297", "226673591177742970257407", "2932031007403" }; //Known primes
   		String[] nonPrimes = { "3341", "2932021007403", "226673591177742970257405" }; //Known composites
+  		MillerRabin mr1;
   		for (String p : primes) //For each prime
       {
-          BigInteger testPrime = new BigInteger(p);
-          if(isProbablePrime(testPrime, degreeOfCertainty))
-          {
-              System.out.println(testPrime + " is probably prime"); //Should get this
-          }
-          else
-          {
-              System.out.println(testPrime + " is composite");
-          }
+  			mr1=new MillerRabin(p);
+            mr1.start();
       }
 
   		for (String n : nonPrimes) //For each composite
       {
-          BigInteger testComposite = new BigInteger(n);
-          if(isProbablePrime(testComposite, degreeOfCertainty))
-          {
-              System.out.println(testComposite + " is probably prime");
-          }
-          else
-          {
-              System.out.println(testComposite + " is composite"); //Should get this
-          }
+          mr1=new MillerRabin(n);
+          mr1.start();
+          
+          
       }
   }
+	
+	MillerRabin(String in){
+		testComposite=new BigInteger(in);
+		
+	}
+	
+	public void start () {
+        System.out.println("Starting new thread for input " +  testComposite );
+        if (t == null) {
+           t = new Thread (this);
+           t.start ();
+        }
+     }
+
+	@Override
+	public void run() {
+		if(isProbablePrime(testComposite, degreeOfCertainty))
+        {
+            System.out.println(testComposite + " is probably prime");
+        }
+        else
+        {
+            System.out.println(testComposite + " is composite"); 
+        }
+		
+	}
 }
