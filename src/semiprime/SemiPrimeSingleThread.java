@@ -4,18 +4,12 @@ import java.math.*;
 import java.util.Random;
 import src.millerrabin.*;
 
-public class SemiPrime implements Runnable{
+public class SemiPrime {
     public static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
     public static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
     public static int degreeOfCertainty = 40; //Higher numbers means more certainty
-    BigInteger testInput;
-    private Thread t;
 
-    public SemiPrime(String p) {
-    	testInput=new BigInteger(p);
-	}
-
-	public static boolean isSemiPrime(BigInteger n) //The actual test
+    public static boolean isSemiPrime(BigInteger n) //The actual test
     {
             if(!MillerRabin.isProbablePrime(n, degreeOfCertainty)) //Is it composite?
             {
@@ -74,38 +68,30 @@ public class SemiPrime implements Runnable{
   {
         String[] semiPrimes = { "4", "6", "3901", "12193", "8602133", "48883987" }; //We know these are semi-prime
         String[] nonSemis = { "5", "7", "5581", "902937", "1295739", "10483595" }; //We know these are not
-        SemiPrime sp1;
         for (String p : semiPrimes) //For each semiPrime, run the test
         {
-        	sp1=new SemiPrime(p);
-            sp1.start();
+            BigInteger testSemiPrime = new BigInteger(p);
+            if(isSemiPrime(testSemiPrime))
+            {
+                System.out.println(testSemiPrime + " is semi-prime."); //We should always get this one
+            }
+            else
+            {
+                System.out.println(testSemiPrime + " is not semi-prime.");
+            }
         }
 
         for (String n : nonSemis) //For each non-semiPrime, run the test
         {
-        	sp1=new SemiPrime(n);
-            sp1.start();
+            BigInteger testNonSemi = new BigInteger(n);
+            if(isSemiPrime(testNonSemi))
+            {
+                System.out.println(testNonSemi + " is semi-prime.");
+            }
+            else
+            {
+                System.out.println(testNonSemi + " is not semi-prime."); //We should always get this one
+            }
         }
   }
-  
-  public void start () {
-      System.out.println("Starting new thread for input " +  testInput );
-      if (t == null) {
-         t = new Thread (this);
-         t.start ();
-      }
-   }
-
-@Override
-public void run() {
-	 if(isSemiPrime(testInput))
-     {
-         System.out.println(testInput + " is semi-prime.");
-     }
-     else
-     {
-         System.out.println(testInput + " is not semi-prime."); 
-     }
-	
-}
 }
