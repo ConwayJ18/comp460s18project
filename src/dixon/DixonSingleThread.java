@@ -57,6 +57,7 @@ public class DixonSingleThread {
                 tempEq[i] = 0;
             }
 
+            //Start multithreading
             //Tries to divide the working value by all the primes in the factor base
             for (int i = 0; i < factorBase; i++) {
                 //If a prime in the factorbase can divide the working value, keep trying to divide it in
@@ -66,6 +67,8 @@ public class DixonSingleThread {
                     x2modn = x2modn.divideAndRemainder(primes.get(arraySize - 1 - i))[0];
                 }
             }
+            //End multithreading
+
             //If the working value = 1 after all the factor base has been passed over the equation is good
             if (x2modn.intValue() == 1) {
                 xVals[foundEqs] = x;

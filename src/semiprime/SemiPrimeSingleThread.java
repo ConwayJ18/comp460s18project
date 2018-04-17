@@ -42,6 +42,8 @@ public class SemiPrime {
             BigInteger cbrt = cubeRoot(n); //First calculate the cube root
             BigInteger i = new BigInteger("2"); //Initialize the incrementer
             BigInteger m = null; //We'll need this later
+
+            //Start multithread
             while(i.compareTo(cbrt)<=0) //For 2 <= i <= cbrt(n)
             {
                 if(n.mod(i).equals(BigInteger.ZERO)) //Is i a factor of n?
@@ -61,6 +63,8 @@ public class SemiPrime {
                 }
                 i = i.add(BigInteger.ONE); //Increment i
             }
+            //End multithread
+
             return false; //If we make it this far, there's only 2 factors, both of which are prime
     }
 

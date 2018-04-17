@@ -29,6 +29,7 @@ public class MillerRabin {
     			d = d.divide(TWO); //Divide by 2
   		}
 
+			//Start multithread
 			//Now choose k=degreeOfCertainty random numbers between 2 and n-2
       for (int i = 0; i < degreeOfCertainty; i++) //For each of those numbers
 			{
@@ -52,6 +53,8 @@ public class MillerRabin {
     			if (r == s) //If for some k, no r made x=n-1, n is composite
     				  return false;
   		}
+			//End multithread
+
   		return true; //If we make it all the way here, n is probably prime
 	}
 
