@@ -5,16 +5,16 @@ import java.util.Random;
 import src.millerrabin.*;
 
 public class SemiPrime extends Thread {
-    public static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
-    public static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
-    public static BigInteger testNumber;
-    public static BigInteger cbrt;
-    public static int degreeOfCertainty = 40; //Higher numbers means more certainty
-    public static int threads = 2;
-    public static boolean result = false;
+    private static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
+    private static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
+    private static BigInteger testNumber;
+    private static BigInteger cbrt;
+    private static int degreeOfCertainty = 40; //Higher numbers means more certainty
+    private static int threads = 2;
+    private static boolean result = false;
     private int threadNumber;
 
-    public SemiPrime(int threadNumber)
+    private SemiPrime(int threadNumber)
     {
        this.threadNumber=threadNumber;
     }
@@ -46,7 +46,7 @@ public class SemiPrime extends Thread {
         }
     }
 
-    public static boolean isSemiPrime() //The actual test
+    private static boolean isSemiPrime() //The actual test
     {
         if(!MillerRabin.isProbablePrime(testNumber, degreeOfCertainty)) //Is it composite?
         {
@@ -57,7 +57,7 @@ public class SemiPrime extends Thread {
         return false; //Else return false
     }
 
-    public static BigInteger cubeRoot(BigInteger n) //Calculates cube roots
+    private static BigInteger cubeRoot(BigInteger n) //Calculates cube roots
     {
         BigDecimal nCopy = new BigDecimal(n); //Create copy of n
         BigInteger tempCbrt = BigInteger.ZERO.setBit(n.bitLength()/3); //Guess bitLength of result
@@ -75,7 +75,7 @@ public class SemiPrime extends Thread {
         return tempCbrt;  //Finally return r
     }
 
-    public static boolean manyFactors(BigInteger n) //How many factors does n have?
+    private static boolean manyFactors(BigInteger n) //How many factors does n have?
     {
             SemiPrime[] thrd = new SemiPrime[threads];
 

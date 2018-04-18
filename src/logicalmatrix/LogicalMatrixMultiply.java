@@ -11,7 +11,7 @@ public class LogicalMatrixMultiply extends Thread {
   private static int threads;
   private int threadNumber;
 
-  public LogicalMatrixMultiply(int threadNumber)
+  private LogicalMatrixMultiply(int threadNumber)
   {
      this.threadNumber=threadNumber;
   }
@@ -22,7 +22,10 @@ public class LogicalMatrixMultiply extends Thread {
 
            for (int j = 0; j < n; j++) { // bColumn
                for (int k = 0; k < n; k++) { // aColumn
-                   C[i][j] = (C[i][j] || (A[i][k] && B[k][j]));
+                  if(!C[i][j])
+                      C[i][j] = (C[i][j] || (A[i][k] && B[k][j]));
+                  else
+                      break;
                }
            }
        }
@@ -30,7 +33,7 @@ public class LogicalMatrixMultiply extends Thread {
        print();
   }
 
-  public static void print(){
+  private static void print(){
     for (int i = 0; i < C.length; i++) {
            for (int j = 0; j < A[0].length; j++) {
                 System.out.print(((A[i][j]) ? 1 : 0) + " " );
@@ -47,69 +50,10 @@ public class LogicalMatrixMultiply extends Thread {
     }
   }
 
-  public static void testFromDriver(int testNumber)
+  public static void runFromDriver(int testNumber)
   {
     threads = 1; //Number of threads
     n = testNumber; //Size of matrixes
-    Random rand = new Random();
-    A=new boolean[n][n];
-    B=new boolean[n][n];
-    C=new boolean[n][n];
-    LogicalMatrixMultiply[] thrd = new LogicalMatrixMultiply[threads];
-
-    //Create A
-    for(int i=0;i<n;i++)
-    {
-      for(int j=0;j<n;j++)
-      {
-          A[i][j]=rand.nextBoolean();
-      }
-    }
-    System.out.println("Matrix A generated.");
-
-    //Create B
-    for(int i=0;i<n;i++)
-    {
-      for(int j=0;j<n;j++)
-      {
-         B[i][j]=rand.nextBoolean();
-      }
-    }
-    System.out.println("Matrix B generated.");
-
-    //Start clock
-    long startTime = System.currentTimeMillis();
-
-    //Run calculation
-    for(int i=0;i<threads;i++)
-    {
-       thrd[i] = new LogicalMatrixMultiply(i);
-       thrd[i].start();
-    }
-
-    for(int i=0;i<threads;i++)
-    {
-          try
-          {
-              thrd[i].join();
-          }
-          catch(InterruptedException e){}
-    }
-
-    //Stop clock
-    long endTime = System.currentTimeMillis();
-
-    //Calculate time elapsed
-    long timeElapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
-
-    //Print results
-    System.out.println("The calculation of the matrix of dimension " + n + " took " + timeElapsedSeconds + " seconds.");
-  }
-
-	public static void main(String[] args) //For testing
-  {
-    threads = 1; //Number of threads
-    n = 4; //Size of matrixes
     Random rand = new Random();
     A=new boolean[n][n];
     B=new boolean[n][n];

@@ -5,17 +5,18 @@ import java.util.Random;
 
 public class PollardRho {
 
-  public static String pollardRho(BigInteger n) {
+  private static String pollardRho(BigInteger n) {
       BigInteger a = new BigInteger("2");
       BigInteger b = new BigInteger("2");
       BigInteger d = BigInteger.ONE;
       while (d.compareTo(BigInteger.ONE) == 0) { //While d is equal to 1
-          //a <- a^2+1 mod n
+          //f(x) = x^2+1 mod n
+          //a = f(a)
           a = a.pow(2); //Square a
           a = a.add(BigInteger.ONE); //Add 1
           a = a.mod(n); //Mod n
 
-          //b <- b^2+1 mod n
+          //b = f(f(b))
           for(int i=0; i<2; i++){
               b = b.pow(2); //Square b
               b = b.add(BigInteger.ONE); //Add 1
@@ -28,7 +29,7 @@ public class PollardRho {
           d = d.gcd(n);
 
           if (d.compareTo(n) == 0) { //If d is n, number is prime (See Fermat's Little Theorem)
-              return "Number is prime.";
+              return "unable to be found.";
           }
       }
       BigInteger factor = n.divide(d); //Divide out d from the original number

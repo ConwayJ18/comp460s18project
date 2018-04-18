@@ -78,21 +78,6 @@ public class DixonSingleThread {
             }
         }
 
-        //Output data
-        System.out.println("Done generating factor base, the factor base has " + arraySize + " primes.");
-        //System.out.print("                         ");
-        for (int i = 0; i < arraySize; i++) {
-            //System.out.printf("%2d ", primes[i]);
-        }
-        //System.out.println("");
-        for (int i = 0; i < xVals.length; i++) {
-            //System.out.printf("%7d === %10d   ", xVals[i], xVals[i].modPow(two, n));
-            for (int j = 0; j < arraySize; j++) {
-                //System.out.printf("%2d ", equations[i][j]);
-            }
-            //System.out.println();
-        }
-
         int[][] mod2Equations = mod2Eqs(equations, arraySize);
         int[][] identity = identityMatrix(arraySize);
         int[][] iAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, true);
@@ -119,14 +104,12 @@ public class DixonSingleThread {
             BigInteger x = BigInteger.ONE;
             BigInteger y = BigInteger.ONE;
             if (isRowEmpty(cAdjusted[i])) {
-                //System.out.println("EQ: " + i);
                 for (int j = 0; j < arraySize; j++) { //Goes across
                     if (iAdjusted[i][j] == 1) {
                         x = x.multiply(xVals[j]);
                     }
                     if (iAdjusted[i][j] == 1) {
                         for (int k = 0; k < arraySize; k++) { //Goes across equation
-                            //System.out.println(primes[k] + "^" + equations[j][k]);
                             y = y.multiply(primes.get(k).pow(equations[j][k]));
                         }
                     }
@@ -134,13 +117,10 @@ public class DixonSingleThread {
 
                 x = x.mod(n);
                 y = sqrt(y).mod(n);
-                //System.out.println("final x: " + x);
-                //System.out.println("final y: " + y);
 
                 if (x.compareTo(y) != 0) {
                     BigInteger gcd = x.subtract(y).abs().gcd(n);
                     if (gcd.compareTo(BigInteger.ONE) != 0) {
-                        //System.out.println("GCD: " + gcd);
                         BigInteger factor = n.divide(gcd);
                         String returnString = gcd + " x " + factor;
                         return returnString;
@@ -148,13 +128,12 @@ public class DixonSingleThread {
                 }
             }
         }
-        System.out.println("***Factor base did not work. Attempt " + level + "\n");
         if (level >= 3) {
-            System.out.println("Unable to find factors");
+            return "unable to be found";
         } else {
             dixon(n);
         }
-        return "";
+        return "unable to be found";
     }
 
     public static boolean isRowEmpty(int[] row) {
@@ -239,13 +218,9 @@ public class DixonSingleThread {
         }
     }
 
-    public static void main(String args[])
+    public static String runFromDriver(BigInteger n)
     {
-  		String[] nonPrimes = { "22", "333", "4444", "55555", "666666", "7777777" }; //Digits are same as number it's made of
-  		for (String n : nonPrimes) //For each composite
-      {
-          BigInteger testComposite = new BigInteger(n);
-          System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));
-      }
+        BigInteger testNumber = n;
+        return dixon(testNumber);
     }
 }
