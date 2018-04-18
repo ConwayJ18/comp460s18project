@@ -24,15 +24,16 @@ class Driver {
             {
                 System.out.println("Program terminated.");
                 running=false;
+                break;
             } else
             {
                 boolean isComposite = !MillerRabin.isProbablePrime(testFactor, 40);
                 System.out.println(testFactor + " is composite? " + isComposite); //Test for primality
                 if(isComposite)
                 {
-                  System.out.println(testFactor + " is semi-prime? " + SemiPrime.isSemiPrime(testFactor)); //Run SemiPrime
-                  System.out.println("The factors of " + testFactor + " via Pollard-Rho are " + PollardRho.pollardRho(testFactor)); //Run PollardRho
-                  if(testFactor.compareTo(MAX_Dixon) <= 0)
+                  System.out.println(testFactor + " is semi-prime? " + SemiPrime.runFromDriver(testFactor)); //Run SemiPrime
+                  System.out.println("The factors of " + testFactor + " via Pollard-Rho are " + PollardRho.runFromDriver(testFactor)); //Run PollardRho
+                  /*if(testFactor.compareTo(MAX_Dixon) <= 0)
                   {
                     System.out.println("The factors of " + testFactor + " via Dixon on a single thread are " + DixonSingleThread.dixon(testFactor)); //Run DixonSingleThread
                     System.out.println("The factors of " + testFactor + " via Dixon on multiple threads are " + Dixon.runFromDriver(testFactor)); //Run DixonSingleThread
@@ -40,7 +41,7 @@ class Driver {
                   else
                   {
                     System.out.println("The test number is too large for our Dixon algorithm.");
-                  }
+                  }*/
                 }
                 else
                 {

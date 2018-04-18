@@ -35,14 +35,9 @@ public class PollardRho {
       return "" + d + " x " + factor; //Print d and the other factor
   }
 
-	public static void main(String[] args) //To test this class. Actual main() is in Driver.java
+	public static String runFromDriver(BigInteger n) //To test this class. Actual main() is in Driver.java
   {
-    String[] nonPrimes = { "22", "333", "4444", "55555", "666666", "7777777", "88888888", "999999999", "1010101010" };
-
-    for (String n : nonPrimes) //For each composite
-    {
-        BigInteger testComposite = new BigInteger(n);
-        System.out.println("The factors of " + testComposite + " are " + pollardRho(testComposite));
-    }
+    BigInteger testNumber = n;
+    return pollardRho(testNumber);
   }
 }
