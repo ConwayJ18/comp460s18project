@@ -106,6 +106,6 @@ public class LogicalMatrixMultiply extends Thread {
     long timeElapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
     //Print results
-    System.out.println("The generation of 2 matrices of dimension " + matrixSize + " and the calculation of their product took " + timeElapsedSeconds + " seconds.");
+    System.out.println("Successfully generated 2 matrixes of dimension " + matrixSize + " and calulcated their product.");
   }
 }

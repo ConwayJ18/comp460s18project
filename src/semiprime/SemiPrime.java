@@ -9,7 +9,7 @@ public class SemiPrime extends Thread {
     private static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
     private static BigInteger testNumber;
     private static BigInteger cbrt;
-    private static int degreeOfCertainty = 40; //Higher numbers means more certainty
+    private static int degreeOfCertainty = 100; //Higher numbers means more certainty
     private static int threads;
     private static boolean result = false;
     private int threadNumber;
