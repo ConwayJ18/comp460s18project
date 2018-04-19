@@ -27,7 +27,7 @@ class Driver {
                 break;
             } else
             {
-                boolean isComposite = !MillerRabin.isProbablePrime(testFactor, 40);
+                boolean isComposite = !MillerRabin.runFromDriver(testFactor);
                 System.out.println(testFactor + " is composite? " + isComposite); //Test for primality
                 if(isComposite)
                 {

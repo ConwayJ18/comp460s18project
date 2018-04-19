@@ -29,14 +29,14 @@ public class SemiPrime extends Thread {
         {
             if(testNumber.mod(i).equals(BigInteger.ZERO)) //Is i a factor of n?
             {
-                if(!MillerRabin.isProbablePrime(i,degreeOfCertainty)) //If so, is i composite?
+                if(!MillerRabin.isProbablePrime(i)) //If so, is i composite?
                 {
                     result = true; //Then n has more than 2 factors
                 }
                 else
                 {
                     m = testNumber.divide(i);
-                    if(!MillerRabin.isProbablePrime(m, degreeOfCertainty)) //What about n/i?
+                    if(!MillerRabin.isProbablePrime(m)) //What about n/i?
                     {
                         result = true; //Then n still has more than 2 factors
                     }
@@ -48,7 +48,7 @@ public class SemiPrime extends Thread {
 
     private static boolean isSemiPrime() //The actual test
     {
-        if(!MillerRabin.isProbablePrime(testNumber, degreeOfCertainty)) //Is it composite?
+        if(!MillerRabin.isProbablePrime(testNumber)) //Is it composite?
         {
                 cbrt = cubeRoot(testNumber); //Calculate the cube root
                 if(!manyFactors(testNumber)) //How many factors does it have?
