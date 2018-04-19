@@ -1,6 +1,7 @@
 <html>
 <h1>COMP 460, Spring 2018 &mdash; Final Project</h1>
-<p>Repo: <a href="https://github.com/ConwayJ18/comp460s18final/">https://github.com/ConwayJ18/comp460s18final/</a></p>
+<h2>Repo:</h2>
+<p><a href="https://github.com/ConwayJ18/comp460s18final/">https://github.com/ConwayJ18/comp460s18final/</a></p>
 <h2>Contents:</h2>
 <table style="width: 594px;">
 <tbody>
@@ -48,7 +49,14 @@
 </table>
 <h2>Project Description:</h2>
 <p>This is a project designed to implement a set of Number Theoretic Algorithms on one or more threads.</p>
-<p>The selected algorithms include the following:<br />1. The Miller-Rabin Primality Testing Algorithm<br />2, A standard Semi-Prime Testing Algorithm<br />3. The Pollard's Rho Factoring Algorithm<br />4. The Dixon Factoring Algorithm<br />5. A Logical (0,1) Matrix Multiplication Algorithm</p>
+<p>The selected algorithms include the following:<br />
+<ol>
+<li>The Miller-Rabin Primality Testing Algorithm</li>
+<li>A standard Semi-Prime Testing Algorithm</li>
+<li>The Pollard's Rho Factoring Algorithm</li>
+<li>The Dixon Factoring Algorithm</li>
+<li>A Logical (0,1) Matrix Multiplication Algorithm</li></p>
+</ol>
 <p>Each of these programs is run by the Driver.java file and can be run using multiple threads if the user so desires.</p>
 <h2>Project Roles:</h2>
 <p>Jess Conway &mdash; Project lead. Wrote the base code for each algorithm.<br />Pranjali Mishra &mdash; Multithreaded each algorithm to run on multiple cores.</p>
