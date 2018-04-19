@@ -1,40 +1,52 @@
-//package src.dixon;
+package src.dixon;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.*;
-import java.math.BigInteger;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.ArrayList;
 
-public class Dixon implements Runnable {
+public class Dixon {
 
     public static int level = 0;
     public static final int RANDOM_POWER = 15;
-    public static ArrayList<BigInteger> primes = new ArrayList<BigInteger>();
-    BigInteger testComposite;
-    private Thread t;
+    private static final double LOG2 = Math.log(2.0);
+    public static int smoothnessBound;
+    public static BigInteger[] primes = new BigInteger[100000];
 
-    public static int primeCounter(BigInteger n) {
-        int i=0;
-        BigInteger prime = BigInteger.ONE.nextProbablePrime();
-        while(prime.compareTo(n) <= 0)
-        {
-          primes.add(prime);
-          prime = prime.nextProbablePrime();
-          i++;
-        }
-
-        return i;
+    public static String runFromDriver(BigInteger number) {
+            loadPrimes();
+            double logN = logBigInteger(number);
+            BigInteger smoothnessBound = BigInteger.valueOf(Math.round(logN * Math.log(logN)));
+            int i = 0;
+            while(primes[i].compareTo(smoothnessBound) <= 0)
+            {
+                i++;
+            }
+            BigInteger factorBase = primes[i].add(BigInteger.ONE);
+            return dixonsAlgorithm(number, factorBase);
     }
 
-    public static String dixon(BigInteger n) {
-    	long startTime = System.nanoTime();
+    public static void loadPrimes() {
+        try {
+            Scanner input = new Scanner(new File("src/dixon/primes.txt"));
+            int i = 0;
+            while (input.hasNextLine()) {
+                String line = input.nextLine();
+                if (!line.isEmpty()) {
+                    primes[i] = new BigInteger(line);
+                    i++;
+                }
+            }
+        } catch (IOException error) {
+            System.out.println("Error in processing the file primes.txt" + error);
+        }
+    }
+
+    public static String dixonsAlgorithm(BigInteger n, BigInteger factorBase) {
         level++;
-        int factorBase = primeCounter(n);
         Random generator = new Random();
-        int arraySize = factorBase;
+        int arraySize = factorBase.intValue();
         BigInteger two = new BigInteger("2");
         int foundEqs = 0;
 
@@ -47,50 +59,35 @@ public class Dixon implements Runnable {
         }
 
         int[] tempEq = new int[arraySize];
-        while (foundEqs < factorBase) {
+        while (foundEqs < factorBase.intValue()) {
             BigInteger x = new BigInteger(RANDOM_POWER, generator);
             BigInteger x2modn = x.modPow(two, n);
-            //reject since random x was less than sqrt(n) so the x^2 mod n = 0
+            //Reject since random x was less than sqrt(n) so the x^2 mod n = 0
             if (x2modn.compareTo(BigInteger.ZERO) == 0) {
                 continue;
             }
 
-            //Get rid of any traces of last equation
+            //Get rid of the previous equation
             for (int i = 0; i < tempEq.length; i++) {
                 tempEq[i] = 0;
             }
 
             //Tries to divide the working value by all the primes in the factor base
-            for (int i = 0; i < factorBase; i++) {
+            for (int i = 0; i < factorBase.intValue(); i++) {
                 //If a prime in the factorbase can divide the working value, keep trying to divide it in
-                while (x2modn.divideAndRemainder(primes.get(arraySize - 1 - i))[1] == BigInteger.ZERO && x2modn.intValue() != 1) {
+                while (x2modn.divideAndRemainder(primes[arraySize - 1 - i])[1] == BigInteger.ZERO && x2modn.intValue() != 1) {
                     //Increment the power value and update the working value
                     tempEq[arraySize - 1 - i]++;
-                    x2modn = x2modn.divideAndRemainder(primes.get(arraySize - 1 - i))[0];
+                    x2modn = x2modn.divideAndRemainder(primes[arraySize - 1 - i])[0];
                 }
             }
             //If the working value = 1 after all the factor base has been passed over the equation is good
             if (x2modn.intValue() == 1) {
                 xVals[foundEqs] = x;
                 BigInteger x2 = x.modPow(two, n);
-                System.arraycopy(tempEq, 0, equations[foundEqs], 0, factorBase);
+                System.arraycopy(tempEq, 0, equations[foundEqs], 0, factorBase.intValue());
                 foundEqs++;
             }
-        }
-
-        //Output data
-        System.out.println("Done generating factor base, the factor base has " + arraySize + " primes.");
-        //System.out.print("                         ");
-        for (int i = 0; i < arraySize; i++) {
-            //System.out.printf("%2d ", primes[i]);
-        }
-        //System.out.println("");
-        for (int i = 0; i < xVals.length; i++) {
-            //System.out.printf("%7d === %10d   ", xVals[i], xVals[i].modPow(two, n));
-            for (int j = 0; j < arraySize; j++) {
-                //System.out.printf("%2d ", equations[i][j]);
-            }
-            //System.out.println();
         }
 
         int[][] mod2Equations = mod2Eqs(equations, arraySize);
@@ -98,10 +95,6 @@ public class Dixon implements Runnable {
         int[][] iAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, true);
         int[][] cAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, false);
 
-
-        long duration = (System.nanoTime() - startTime);
-        double seconds = (double)duration / 1000000000.0;
-        System.out.println("Time taken to generate factor base for input value :"+n+" in seconds is "+ seconds);
         return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
     }
 
@@ -123,40 +116,33 @@ public class Dixon implements Runnable {
             BigInteger x = BigInteger.ONE;
             BigInteger y = BigInteger.ONE;
             if (isRowEmpty(cAdjusted[i])) {
-                //System.out.println("EQ: " + i);
                 for (int j = 0; j < arraySize; j++) { //Goes across
                     if (iAdjusted[i][j] == 1) {
                         x = x.multiply(xVals[j]);
                     }
                     if (iAdjusted[i][j] == 1) {
                         for (int k = 0; k < arraySize; k++) { //Goes across equation
-                            //System.out.println(primes[k] + "^" + equations[j][k]);
-                            y = y.multiply(primes.get(k).pow(equations[j][k]));
+                            y = y.multiply(primes[k].pow(equations[j][k]));
                         }
                     }
                 }
 
                 x = x.mod(n);
                 y = sqrt(y).mod(n);
-                //System.out.println("final x: " + x);
-                //System.out.println("final y: " + y);
 
                 if (x.compareTo(y) != 0) {
                     BigInteger gcd = x.subtract(y).abs().gcd(n);
                     if (gcd.compareTo(BigInteger.ONE) != 0) {
-                        //System.out.println("GCD: " + gcd);
                         BigInteger factor = n.divide(gcd);
-                        String returnString = gcd + " x " + factor;
-                        return returnString;
+                        return "" + gcd + " x " + factor;
                     }
                 }
             }
         }
-        System.out.println("***Factor base did not work. Attempt " + level + "\n");
         if (level >= 3) {
             System.out.println("Unable to find factors");
         } else {
-            dixon(n);
+            dixonsAlgorithm(n, new BigInteger(arraySize + ""));
         }
         return "";
     }
@@ -243,45 +229,11 @@ public class Dixon implements Runnable {
         }
     }
 
-    public static void runFromDriver(BigInteger testNumber)
-    {
-        String m = testNumber.toString();
-        Dixon d2=new Dixon(m);
-        d2.start();
+    public static double logBigInteger(BigInteger val) {
+        int blex = val.bitLength() - 1022; // any value in 60..1023 is ok
+        if (blex > 0)
+            val = val.shiftRight(blex);
+        double res = Math.log(val.doubleValue());
+        return blex > 0 ? res + blex * LOG2 : res;
     }
-
-    public static void main(String args[])
-    {
-  		String[] nonPrimes = { "22", "333", "4444", "55555", "66666", "77777" }; //Known composites
-  		for (String n : nonPrimes) //For each composite
-      {
-          Dixon d1=new Dixon(n);
-          d1.start();
-  		    //BigInteger testComposite = new BigInteger(n);
-          //System.out.println("The factors of " + testComposite + " are " + dixon(testComposite));
-      }
-    }
-
-
-
-    Dixon(String input){
-    	 testComposite=new BigInteger(input);
-
-    }
-
-    public void start () {
-        System.out.println("Starting new thread for input " +  testComposite );
-        if (t == null) {
-           t = new Thread (this);
-           t.start ();
-        }
-     }
-
-	@Override
-	public void run() {
-
-		System.out.println(dixon(testComposite));
-
-
-	}
 }
