@@ -1,7 +1,6 @@
 <html>
 <h1>COMP 460, Spring 2018 &mdash; Final Project</h1>
 <p>Repo: <a href="https://github.com/ConwayJ18/comp460s18final/">https://github.com/ConwayJ18/comp460s18final/</a></p>
-<p>&nbsp;</p>
 <h3>Contents:</h3>
 <table style="width: 594px;">
 <tbody>
@@ -47,7 +46,6 @@
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 <h3>Project Description:</h3>
 <p>This is a project designed to implement a set of Number Theoretic Algorithms on one or more threads.</p>
