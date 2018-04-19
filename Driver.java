@@ -20,8 +20,12 @@ class Driver {
     {
         boolean running = true;
         Scanner kbReader = new Scanner(System.in);
-        System.out.println("Please enter the number of cores available on your computer. To quit, type 0: "); //Ask for number of threads
-        int threads = kbReader.nextInt(); //Call that number "threads"
+        int threads = 0;
+        while(threads < 1 || threads > 8)
+        {
+            System.out.println("Please enter the number of cores (1-8) available. To quit, type 0: "); //Ask for number of threads
+            threads = kbReader.nextInt(); //Call that number "threads"
+        }
 
         while(running)
         {

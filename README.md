@@ -63,7 +63,9 @@
 <h2>How to run:</h2>
 <ol>
 <li>Compile and run Driver.java</li>
-<li>Enter the number of cores (1-8) that you have on your computer</li>
+<li>Enter the number of cores (1-8) that you have on your computer
+<ul><li>This will determine the number of threads used by the program</li></ul>
+</li>
 <li>Enter a number to run the non-matrix algorithms on</li>
 <li>Enter a number to use as the logical matrix dimension</li>
 <li>Repeat 3 & 4 as many times as desired, typing "0" when finished</li>
