@@ -16,7 +16,7 @@ public class Dixon extends Thread {
     private static double logN;
     private static BigInteger smoothnessBound;
     private static BigInteger factorBase;
-    private static int threads = 1;
+    private static int threads = 2;
     private int threadNumber;
 
     private Dixon(int threadNumber)
@@ -41,7 +41,10 @@ public class Dixon extends Thread {
                 }
                 for(int j = 0; i<threads; j++)
                 {
-                  input.nextLine();
+                  if(input.hasNextLine())
+                    input.nextLine();
+                  else
+                    break;
                 }
             }
         } catch (IOException error) {
