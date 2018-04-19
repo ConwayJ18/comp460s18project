@@ -12,27 +12,29 @@ class Driver {
     public static void main(String[] args)
     {
         boolean running = true;
+        Scanner kbReader = new Scanner(System.in);
+        System.out.println("Please enter the number of cores available on your computer. To quit, type 0: "); //Ask for number of threads
+        int threads = kbReader.nextInt(); //Call that number "threads"
 
         while(running)
         {
-            Scanner kbReader = new Scanner(System.in);
             System.out.println("Please enter a number for factor testing. To quit, type 0: "); //Ask for test number
-            BigInteger testFactor = kbReader.nextBigInteger(); //Call that number "testFactor"
-            if(testFactor.equals(BigInteger.ZERO))
+            BigInteger testNumber = kbReader.nextBigInteger(); //Call that number "testNumber"
+            if(testNumber.equals(BigInteger.ZERO))
             {
                 System.out.println("Program terminated.");
                 running=false;
                 break;
             } else
             {
-                boolean isComposite = !MillerRabin.runFromDriver(testFactor);
-                System.out.println(testFactor + " is composite? " + isComposite); //Test for primality
+                boolean isComposite = !MillerRabin.runFromDriver(testNumber, threads);
+                System.out.println(testNumber + " is composite? " + isComposite); //Test for primality
                 if(isComposite)
                 {
-                  System.out.println(testFactor + " is semi-prime? " + SemiPrime.runFromDriver(testFactor)); //Run SemiPrime
-                  System.out.println("The factors of " + testFactor + " via Pollard-Rho are " + PollardRho.runFromDriver(testFactor)); //Run PollardRho
-                  System.out.println("The factors of " + testFactor + " via Dixon are " + Dixon.runFromDriver(testFactor)); //Run DixonSingleThread
-                  Dixon.runFromDriver(testFactor);
+                  System.out.println(testNumber + " is semi-prime? " + SemiPrime.runFromDriver(testNumber, threads)); //Run SemiPrime
+                  System.out.println("The factors of " + testNumber + " via Pollard-Rho are " + PollardRho.runFromDriver(testNumber)); //Run PollardRho
+                  System.out.println("The factors of " + testNumber + " via Dixon are " + Dixon.runFromDriver(testNumber, threads)); //Run DixonSingleThread
+                  Dixon.runFromDriver(testNumber, threads);
                 }
                 else
                 {
@@ -40,14 +42,14 @@ class Driver {
                 }
             }
             System.out.println("Please enter a number for matrix testing. To quit, type 0: "); //Ask for test number
-            int testMatrix = kbReader.nextInt();
-            if(testMatrix == 0)
+            int matrixSize = kbReader.nextInt();
+            if(matrixSize == 0)
             {
                 System.out.println("Program terminated.");
                 running=false;
             } else
             {
-                LogicalMatrixMultiply.runFromDriver(testMatrix);
+                LogicalMatrixMultiply.runFromDriver(matrixSize, threads);
             }
 
         }

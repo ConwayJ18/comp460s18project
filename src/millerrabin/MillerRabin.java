@@ -12,7 +12,7 @@ public class MillerRabin extends Thread {
 	private static final int degreeOfCertainty = 40; //Higher numbers reduce chance of false-positive
 	private static BigInteger testNumber;
 	private static boolean result = true;
-	private static final int threads = 1;
+	private static int threads;
 	private static int s = 0;
 	private static BigInteger d;
 	public int threadNumber;
@@ -108,9 +108,10 @@ public class MillerRabin extends Thread {
   		return res;
 	}
 
-	public static boolean runFromDriver(BigInteger n)
+	public static boolean runFromDriver(BigInteger n, int t)
 	{
 			testNumber = n;
+			threads = t;
 			return isProbablePrime();
 	}
 }

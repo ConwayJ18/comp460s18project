@@ -16,7 +16,7 @@ public class Dixon extends Thread {
     private static double logN;
     private static BigInteger smoothnessBound;
     private static BigInteger factorBase;
-    private static int threads = 2;
+    private static int threads;
     private int threadNumber;
 
     private Dixon(int threadNumber)
@@ -183,11 +183,11 @@ public class Dixon extends Thread {
             }
         }
         if (level >= 3) {
-            System.out.println("Unable to find factors");
+            return "unable to be found";
         } else {
             dixonsAlgorithm(n, new BigInteger(arraySize + ""));
         }
-        return "";
+        return "unable to be found";
     }
 
     private static boolean isRowEmpty(int[] row) {
@@ -280,9 +280,10 @@ public class Dixon extends Thread {
         return blex > 0 ? res + blex * LOG2 : res;
     }
 
-    public static String runFromDriver(BigInteger n)
+    public static String runFromDriver(BigInteger n, int t)
     {
             testNumber = n;
+            threads = t;
             loadPrimes();
             logN = logBigInteger(testNumber);
             smoothnessBound = BigInteger.valueOf(Math.round(logN * Math.log(logN)));

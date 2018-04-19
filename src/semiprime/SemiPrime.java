@@ -10,7 +10,7 @@ public class SemiPrime extends Thread {
     private static BigInteger testNumber;
     private static BigInteger cbrt;
     private static int degreeOfCertainty = 40; //Higher numbers means more certainty
-    private static int threads = 2;
+    private static int threads;
     private static boolean result = false;
     private int threadNumber;
 
@@ -99,9 +99,10 @@ public class SemiPrime extends Thread {
             return result;
     }
 
-    public static boolean runFromDriver(BigInteger n)
+    public static boolean runFromDriver(BigInteger n, int t)
     {
         testNumber = n;
+        threads = t;
         return isSemiPrime();
     }
 }
