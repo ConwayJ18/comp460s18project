@@ -1,3 +1,4 @@
+<html>
 <h1>COMP 460, Spring 2018 &mdash; Final Project</h1>
 <p>Repo: <a href="https://github.com/ConwayJ18/comp460s18final/">https://github.com/ConwayJ18/comp460s18final/</a></p>
 <p>&nbsp;</p>
@@ -54,3 +55,4 @@
 <p>Each of these programs is run by the Driver.java file and can be run using multiple threads if the user so desires.</p>
 <h3>Project Roles:</h3>
 <p>Jess Conway &mdash; Project lead. Wrote the base code for each algorithm.<br />Pranjali Mishra &mdash; Multithreaded each algorithm to run on multiple cores.</p>
+</html>
