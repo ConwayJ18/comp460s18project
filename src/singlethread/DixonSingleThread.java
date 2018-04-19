@@ -1,4 +1,4 @@
-package src.dixon;
+package src.singlethread;
 
 import java.io.File;
 import java.io.IOException;
