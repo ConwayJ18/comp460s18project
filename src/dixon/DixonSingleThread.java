@@ -14,7 +14,7 @@ public class Dixon {
     public static int smoothnessBound;
     public static BigInteger[] primes = new BigInteger[100000];
 
-    public static void runFromDriver(BigInteger number) {
+    public static String runFromDriver(BigInteger number) {
             loadPrimes();
             double logN = logBigInteger(number);
             BigInteger smoothnessBound = BigInteger.valueOf(Math.round(logN * Math.log(logN)));
@@ -24,7 +24,7 @@ public class Dixon {
                 i++;
             }
             BigInteger factorBase = primes[i].add(BigInteger.ONE);
-            dixonsAlgorithm(number, factorBase);
+            return dixonsAlgorithm(number, factorBase);
     }
 
     public static void loadPrimes() {
@@ -95,8 +95,7 @@ public class Dixon {
         int[][] iAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, true);
         int[][] cAdjusted = gaussianEliminationMod2(mod2Equations, identity, arraySize, arraySize, false);
 
-        combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
-        return "";
+        return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
     }
 
     public static int[][] mod2Eqs(int[][] equations, int arraySize) {
@@ -112,7 +111,7 @@ public class Dixon {
         return equations;
     }
 
-    public static void combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
+    public static String combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
         for (int i = 0; i < arraySize; i++) { //Goes down
             BigInteger x = BigInteger.ONE;
             BigInteger y = BigInteger.ONE;
@@ -135,8 +134,7 @@ public class Dixon {
                     BigInteger gcd = x.subtract(y).abs().gcd(n);
                     if (gcd.compareTo(BigInteger.ONE) != 0) {
                         BigInteger factor = n.divide(gcd);
-                        System.out.println("Factors: " + gcd + " x " + factor);
-                        return;
+                        return "" + gcd + " x " + factor;
                     }
                 }
             }
@@ -146,6 +144,7 @@ public class Dixon {
         } else {
             dixonsAlgorithm(n, new BigInteger(arraySize + ""));
         }
+        return "";
     }
 
     public static boolean isRowEmpty(int[] row) {
