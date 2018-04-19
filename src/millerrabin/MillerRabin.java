@@ -17,7 +17,7 @@ public class MillerRabin extends Thread {
 	private static BigInteger d;
 	public int threadNumber;
 
-	public MillerRabin(int threadNumber)
+	private MillerRabin(int threadNumber)
 	{
 		this.threadNumber = threadNumber;
 	}
@@ -54,7 +54,7 @@ public class MillerRabin extends Thread {
 			}
 	}
 
-	public static boolean isProbablePrime() //The actual calculator
+	private static boolean isProbablePrime() //The actual calculator
 	{
 			//The first two are special cases
   		if (testNumber.compareTo(ONE) == 0) //Is the number 1?
