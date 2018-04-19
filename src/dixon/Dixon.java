@@ -6,29 +6,69 @@ import java.math.*;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Dixon {
+public class Dixon extends Thread {
 
     public static int level = 0;
     public static final int RANDOM_POWER = 15;
     private static final double LOG2 = Math.log(2.0);
-    public static int smoothnessBound;
     public static BigInteger[] primes = new BigInteger[100000];
+    private static BigInteger testNumber;
+    private static double logN;
+    private static BigInteger smoothnessBound;
+    private static BigInteger factorBase;
+    private static int threads = 1;
+    private int threadNumber;
 
-    public static String runFromDriver(BigInteger number) {
-            loadPrimes();
-            double logN = logBigInteger(number);
-            BigInteger smoothnessBound = BigInteger.valueOf(Math.round(logN * Math.log(logN)));
-            int i = 0;
-            while(primes[i].compareTo(smoothnessBound) <= 0)
-            {
-                i++;
-            }
-            BigInteger factorBase = primes[i].add(BigInteger.ONE);
-            return dixonsAlgorithm(number, factorBase);
+    private Dixon(int threadNumber)
+    {
+        this.threadNumber = threadNumber;
     }
 
-    public static void loadPrimes() {
+    public void run()
+    {
         try {
+            Scanner input = new Scanner(new File("src/dixon/primes.txt"));
+            int i = threadNumber;
+            for(int j = 0; j < threadNumber; j++)
+            {
+                input.nextLine();
+            }
+            while (input.hasNextLine()) {
+                String line = input.nextLine();
+                if (!line.isEmpty()) {
+                    primes[i] = new BigInteger(line);
+                    i++;
+                }
+                for(int j = 0; i<threads; j++)
+                {
+                  input.nextLine();
+                }
+            }
+        } catch (IOException error) {
+            System.out.println("Error in processing the file primes.txt" + error);
+        }
+    }
+
+    private static void loadPrimes() {
+        //Start multithreading
+        Dixon[] thrd = new Dixon[threads];
+        for(int i=0;i<threads;i++)
+        {
+           thrd[i] = new Dixon(i);
+           thrd[i].start();
+        }
+
+        for(int i=0;i<threads;i++)
+        {
+              try
+              {
+                  thrd[i].join();
+              }
+              catch(InterruptedException e){}
+        }
+        //End multithreading
+
+        /*try {
             Scanner input = new Scanner(new File("src/dixon/primes.txt"));
             int i = 0;
             while (input.hasNextLine()) {
@@ -40,10 +80,10 @@ public class Dixon {
             }
         } catch (IOException error) {
             System.out.println("Error in processing the file primes.txt" + error);
-        }
+        }*/
     }
 
-    public static String dixonsAlgorithm(BigInteger n, BigInteger factorBase) {
+    private static String dixonsAlgorithm(BigInteger n, BigInteger factorBase) {
         level++;
         Random generator = new Random();
         int arraySize = factorBase.intValue();
@@ -54,7 +94,7 @@ public class Dixon {
         BigInteger[] xVals = new BigInteger[arraySize];
         for (int i = 0; i < arraySize; i++) {
             for (int j = 0; j < arraySize; j++) {
-                equations[i][j] = 0;
+                equations[i][j] = 0; //Initializes every entry as 0
             }
         }
 
@@ -98,7 +138,7 @@ public class Dixon {
         return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
     }
 
-    public static int[][] mod2Eqs(int[][] equations, int arraySize) {
+    private static int[][] mod2Eqs(int[][] equations, int arraySize) {
         for (int i = 0; i < arraySize; i++) {
             for (int j = 0; j < arraySize; j++) {
                 if (equations[i][j] % 2 == 0) {
@@ -111,7 +151,7 @@ public class Dixon {
         return equations;
     }
 
-    public static String combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
+    private static String combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
         for (int i = 0; i < arraySize; i++) { //Goes down
             BigInteger x = BigInteger.ONE;
             BigInteger y = BigInteger.ONE;
@@ -147,7 +187,7 @@ public class Dixon {
         return "";
     }
 
-    public static boolean isRowEmpty(int[] row) {
+    private static boolean isRowEmpty(int[] row) {
         for (int i = 0; i < row.length; i++) {
             if (row[i] != 0) {
                 return false;
@@ -156,7 +196,7 @@ public class Dixon {
         return true;
     }
 
-    public static int[][] identityMatrix(int size) {
+    private static int[][] identityMatrix(int size) {
         int[][] matrix = new int[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -166,7 +206,7 @@ public class Dixon {
         return matrix;
     }
 
-    public static BigInteger sqrt(BigInteger n) {
+    private static BigInteger sqrt(BigInteger n) {
         BigInteger a = BigInteger.ONE;
         BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
         while (b.compareTo(a) >= 0) {
@@ -181,7 +221,7 @@ public class Dixon {
     }
 
     // performs Gaussian elimination mod 2 on ROWSxCOLS matrix and ROWSxROWS identity matrix
-    public static int[][] gaussianEliminationMod2(int[][] matrix, int[][] iMatrix, int ROWS, int COLS, boolean i) {
+    private static int[][] gaussianEliminationMod2(int[][] matrix, int[][] iMatrix, int ROWS, int COLS, boolean i) {
         for (int col = 0; col < COLS; col++) {
             // first get a 1 in the current diagonal entry
             if (matrix[col][col] == 0) {
@@ -229,11 +269,27 @@ public class Dixon {
         }
     }
 
-    public static double logBigInteger(BigInteger val) {
+    private static double logBigInteger(BigInteger val) {
         int blex = val.bitLength() - 1022; // any value in 60..1023 is ok
         if (blex > 0)
             val = val.shiftRight(blex);
         double res = Math.log(val.doubleValue());
         return blex > 0 ? res + blex * LOG2 : res;
+    }
+
+    public static String runFromDriver(BigInteger n)
+    {
+            testNumber = n;
+            loadPrimes();
+            logN = logBigInteger(testNumber);
+            smoothnessBound = BigInteger.valueOf(Math.round(logN * Math.log(logN)));
+            int i = 0;
+            while(primes[i].compareTo(smoothnessBound) <= 0)
+            {
+                i++;
+            }
+            factorBase = primes[i].add(BigInteger.ONE);
+
+            return dixonsAlgorithm(testNumber, factorBase);
     }
 }
