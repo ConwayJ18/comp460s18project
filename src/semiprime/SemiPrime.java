@@ -7,19 +7,19 @@ import src.millerrabin.*;
 public class SemiPrime extends Thread {
     private static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
     private static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
-    private static BigInteger testNumber;
-    private static BigInteger cbrt;
+    private static BigInteger testNumber; //The number being factored
+    private static BigInteger cbrt; //Stores the cube root of the number being factored
     private static int degreeOfCertainty = 100; //Higher numbers means more certainty
-    private static int threads;
-    private static boolean result = false;
+    private static int threads; //The number of threads we will run
+    private static boolean result = false; //Shared among threads
     private int threadNumber;
 
-    private SemiPrime(int threadNumber)
+    private SemiPrime(int threadNumber) //Thread constructor
     {
        this.threadNumber=threadNumber;
     }
 
-    public void run()
+    public void run() //The part of the code that's multithreaded
     {
         BigInteger i = BigInteger.valueOf(threadNumber+2); //Initialize the incrementer
         BigInteger m = null; //We'll need this later
@@ -29,14 +29,14 @@ public class SemiPrime extends Thread {
         {
             if(testNumber.mod(i).equals(BigInteger.ZERO)) //Is i a factor of n?
             {
-                if(!MillerRabin.isProbablePrime(i)) //If so, is i composite?
+                if(!MillerRabin.isProbablePrime(i, threads)) //If so, is i composite?
                 {
                     result = true; //Then n has more than 2 factors
                 }
                 else
                 {
                     m = testNumber.divide(i);
-                    if(!MillerRabin.isProbablePrime(m)) //What about n/i?
+                    if(!MillerRabin.isProbablePrime(m, threads)) //What about n/i?
                     {
                         result = true; //Then n still has more than 2 factors
                     }
@@ -48,7 +48,7 @@ public class SemiPrime extends Thread {
 
     private static boolean isSemiPrime() //The actual test
     {
-        if(!MillerRabin.isProbablePrime(testNumber)) //Is it composite?
+        if(!MillerRabin.isProbablePrime(testNumber, threads)) //Is it composite?
         {
                 cbrt = cubeRoot(testNumber); //Calculate the cube root
                 if(!manyFactors(testNumber)) //How many factors does it have?
@@ -82,15 +82,15 @@ public class SemiPrime extends Thread {
             //Start multithreading
             for(int i=0;i<threads;i++)
             {
-               thrd[i] = new SemiPrime(i);
-               thrd[i].start();
+               thrd[i] = new SemiPrime(i); //Fill threads array
+               thrd[i].start(); //Start each thread
             }
 
             for(int i=0;i<threads;i++)
             {
                   try
                   {
-                      thrd[i].join();
+                      thrd[i].join(); //Wait for each thread to finish
                   }
                   catch(InterruptedException e){}
             }
@@ -99,10 +99,10 @@ public class SemiPrime extends Thread {
             return result;
     }
 
-    public static boolean runFromDriver(BigInteger n, int t)
+    public static boolean runFromDriver(BigInteger n, int t) //Called from Driver
     {
-        testNumber = n;
-        threads = t;
-        return isSemiPrime();
+        testNumber = n; //Assign input
+        threads = t; //Assign input
+        return isSemiPrime(); //Run test & return results
     }
 }

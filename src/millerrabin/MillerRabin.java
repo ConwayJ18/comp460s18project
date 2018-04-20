@@ -10,23 +10,23 @@ public class MillerRabin extends Thread {
 	private static final BigInteger TWO = new BigInteger("2"); //TWO
 	private static final BigInteger THREE = new BigInteger("3"); //And THREE
 	private static final int degreeOfCertainty = 40; //Higher numbers reduce chance of false-positive
-	private static BigInteger testNumber;
-	private static boolean result = true;
-	private static int threads;
-	private static int s = 0;
-	private static BigInteger d;
+	private static BigInteger testNumber; //Number being tested
+	private static boolean result = true; //Shared among threads
+	private static int threads; //Number of threads
+	private static int s = 0; //Needed by threads
+	private static BigInteger d; //Also needed by threads
 	public int threadNumber;
 
-	private MillerRabin(int threadNumber)
+	private MillerRabin(int threadNumber) //Tread constructor
 	{
 		this.threadNumber = threadNumber;
 	}
 
-	public void run()
+	public void run() //Multithreaded part of code
 	{
-			for (int i = threadNumber; i < degreeOfCertainty; i+=threads) //For each of those numbers
+			for (int i = threadNumber; i < degreeOfCertainty; i+=threads) //Run degreeOfCertainty times
 			{
-					BigInteger a = uniformRandom(TWO, testNumber.subtract(ONE)); //Assign it a value
+					BigInteger a = uniformRandom(TWO, testNumber.subtract(ONE)); //Grab a random number a
 					BigInteger x = a.modPow(d, testNumber); //Calculate x = a^d mod n
 
 					if (x.equals(ONE) || x.equals(testNumber.subtract(ONE))) //If x=1 or x=n-1
@@ -75,27 +75,21 @@ public class MillerRabin extends Thread {
 			MillerRabin[] thrd = new MillerRabin[threads];
 			for(int i=0;i<threads;i++)
 			{
-				 thrd[i] = new MillerRabin(i);
-				 thrd[i].start();
+				 thrd[i] = new MillerRabin(i); //Fill threads array
+				 thrd[i].start(); //Start each thread
 			}
 
 			for(int i=0;i<threads;i++)
 			{
 						try
 						{
-								thrd[i].join();
+								thrd[i].join(); //Wait for each thread to finish
 						}
 						catch(InterruptedException e){}
 			}
 			//End multithreading
 
-  		return result; //If we make it all the way here, n is probably prime
-	}
-
-	public static boolean isProbablePrime(BigInteger n) //To be used outside the Driver
-	{
-			testNumber = n;
-			return isProbablePrime();
+  		return result; //Result with be true if probably prime
 	}
 
 	private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) //Used to generate random numbers
@@ -108,10 +102,17 @@ public class MillerRabin extends Thread {
   		return res;
 	}
 
-	public static boolean runFromDriver(BigInteger n, int t)
+	public static boolean isProbablePrime(BigInteger n, int t) //Used by SemiPrime.java
 	{
-			testNumber = n;
-			threads = t;
-			return isProbablePrime();
+			testNumber = n; //Assign input
+			threads = t; //Assign input
+			return isProbablePrime(); //Run test & return results
+	}
+
+	public static boolean runFromDriver(BigInteger n, int t) //Used by Driver
+	{
+			testNumber = n; //Assign input
+			threads = t; //Assign input
+			return isProbablePrime(); //Run test & return results
 	}
 }
