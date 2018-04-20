@@ -45,6 +45,10 @@
 <td style="width: 119px;">src/singlethread/SemiPrimeSingleThread.java</td>
 <td style="width: 465px;">An archival file to run Semi-Prime Testing on a single thread</td>
 </tr>
+<tr>
+<td style="width: 119px;">Documentation.pdf</td>
+<td style="width: 465px;">The documentation associated with this project.</td>
+</tr>
 </tbody>
 </table>
 <h2>Project Description:</h2>
