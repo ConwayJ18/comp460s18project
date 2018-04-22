@@ -6,9 +6,9 @@ import java.util.Random;
 public class PollardRho {
 
   private static String pollardRho(BigInteger n) {
-      BigInteger a = new BigInteger("2");
-      BigInteger b = new BigInteger("2");
-      BigInteger d = BigInteger.ONE;
+      BigInteger a = new BigInteger("2"); //Set a = 2
+      BigInteger b = new BigInteger("2"); //Set b = 2
+      BigInteger d = BigInteger.ONE; //Set d = 1
       while (d.compareTo(BigInteger.ONE) == 0) { //While d is equal to 1
           //f(x) = x^2+1 mod n
           //a = f(a)
@@ -29,16 +29,16 @@ public class PollardRho {
           d = d.gcd(n);
 
           if (d.compareTo(n) == 0) { //If d is n, number is prime (See Fermat's Little Theorem)
-              return "unable to be found.";
+              return "unable to be found."; //If prime factors "unable to be found"
           }
       }
       BigInteger factor = n.divide(d); //Divide out d from the original number
       return "" + d + " x " + factor; //Print d and the other factor
   }
 
-	public static String runFromDriver(BigInteger n) //To test this class. Actual main() is in Driver.java
+	public static String runFromDriver(BigInteger n) //Called from Driver
   {
-    BigInteger testNumber = n;
-    return pollardRho(testNumber);
+    BigInteger testNumber = n; //Assign input
+    return pollardRho(testNumber); //Run test & return results
   }
 }

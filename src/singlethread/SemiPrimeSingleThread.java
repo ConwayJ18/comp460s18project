@@ -1,4 +1,4 @@
-package src.semiprime;
+package src.singlethread;
 
 import java.math.*;
 import java.util.Random;

@@ -1,4 +1,4 @@
-package src.millerrabin;
+package src.singlethread;
 
 import java.math.BigInteger;
 import java.util.Random;

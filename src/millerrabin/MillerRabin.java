@@ -3,58 +3,93 @@ package src.millerrabin;
 import java.math.BigInteger;
 import java.util.Random;
 
-public class MillerRabin implements Runnable{
+public class MillerRabin extends Thread {
 
 	private static final BigInteger ZERO = BigInteger.ZERO; //BigInteger copy of ZERO
 	private static final BigInteger ONE = BigInteger.ONE; //Same for ONE
 	private static final BigInteger TWO = new BigInteger("2"); //TWO
 	private static final BigInteger THREE = new BigInteger("3"); //And THREE
 	private static final int degreeOfCertainty = 40; //Higher numbers reduce chance of false-positive
-	BigInteger testComposite;
-    private Thread t;
+	private static BigInteger testNumber; //Number being tested
+	private static boolean result = true; //Shared among threads
+	private static int threads; //Number of threads
+	private static int s = 0; //Needed by threads
+	private static BigInteger d; //Also needed by threads
+	public int threadNumber;
 
-	public static boolean isProbablePrime(BigInteger n, int degreeOfCertainty) //The actual calculator
+	private MillerRabin(int threadNumber) //Tread constructor
+	{
+		this.threadNumber = threadNumber;
+	}
+
+	public void run() //Multithreaded part of code
+	{
+			for (int i = threadNumber; i < degreeOfCertainty; i+=threads) //Run degreeOfCertainty times
+			{
+					BigInteger a = uniformRandom(TWO, testNumber.subtract(ONE)); //Grab a random number a
+					BigInteger x = a.modPow(d, testNumber); //Calculate x = a^d mod n
+
+					if (x.equals(ONE) || x.equals(testNumber.subtract(ONE))) //If x=1 or x=n-1
+							continue; //Stop here, move on to the next random number
+
+					int r;
+					for (r=0; r < s; r++) //This part runs s-1 times
+					{
+							x = x.modPow(TWO, testNumber); //Calculate (new) x = (old) x^2 mod n
+
+							if (x.equals(ONE)) //If this new x=1
+							{
+									 result = false;	//The number is composite
+									 break;
+							}
+
+							if (x.equals(testNumber.subtract(ONE))) //If this new x=n-1
+									 break; //Stop here, move on to next random number
+					}
+					if (r == s) //If for some k, no r made x=n-1, n is composite
+					{
+							result = false;
+							break;
+					}
+			}
+	}
+
+	private static boolean isProbablePrime() //The actual calculator
 	{
 			//The first two are special cases
-  		if (n.compareTo(ONE) == 0) //Is the number 1?
+  		if (testNumber.compareTo(ONE) == 0) //Is the number 1?
   			 return false; //Then it's not prime
 
-      if (n.compareTo(THREE) < 0) //Is it less than 3?
+      if (testNumber.compareTo(THREE) < 0) //Is it less than 3?
   			 return true; //Then it is prime
 
 			//Start the tough stuff, write n-1 = 2^s + d
-      int s = 0;
-  		BigInteger d = n.subtract(ONE); //Start with d = n-1
+  		d = testNumber.subtract(ONE); //Start with d = n-1
   		while (d.mod(TWO).equals(ZERO)) //While still even
 			{
     			s++;	//Increment exponent
     			d = d.divide(TWO); //Divide by 2
   		}
 
-			//Now choose k=degreeOfCertainty random numbers between 2 and n-2
-      for (int i = 0; i < degreeOfCertainty; i++) //For each of those numbers
+			//Start multithreading
+			MillerRabin[] thrd = new MillerRabin[threads];
+			for(int i=0;i<threads;i++)
 			{
-    			BigInteger a = uniformRandom(TWO, n.subtract(ONE)); //Assign it a value
-    			BigInteger x = a.modPow(d, n); //Calculate x = a^d mod n
+				 thrd[i] = new MillerRabin(i); //Fill threads array
+				 thrd[i].start(); //Start each thread
+			}
 
-          if (x.equals(ONE) || x.equals(n.subtract(ONE))) //If x=1 or x=n-1
-    				  continue; //Stop here, move on to the next random number
+			for(int i=0;i<threads;i++)
+			{
+						try
+						{
+								thrd[i].join(); //Wait for each thread to finish
+						}
+						catch(InterruptedException e){}
+			}
+			//End multithreading
 
-          int r;
-    			for (r=0; r < s; r++) //This part runs s-1 times
-					{
-      				x = x.modPow(TWO, n); //Calculate (new) x = (old) x^2 mod n
-
-      				if (x.equals(ONE)) //If this new x=1
-      					   return false;	//The number is composite
-
-      				if (x.equals(n.subtract(ONE))) //If this new x=n-1
-      					   break; //Stop here, move on to next random number
-    			}
-    			if (r == s) //If for some k, no r made x=n-1, n is composite
-    				  return false;
-  		}
-  		return true; //If we make it all the way here, n is probably prime
+  		return result; //Result with be true if probably prime
 	}
 
 	private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) //Used to generate random numbers
@@ -67,49 +102,17 @@ public class MillerRabin implements Runnable{
   		return res;
 	}
 
-	public static void main(String[] args) //To test this class. Actual main() is in Driver.java
-  {
-  		String[] primes = { "2", "3", "3613", "7297", "226673591177742970257407", "2932031007403" }; //Known primes
-  		String[] nonPrimes = { "3341", "2932021007403", "226673591177742970257405" }; //Known composites
-  		MillerRabin mr1;
-  		for (String p : primes) //For each prime
-      {
-  			mr1=new MillerRabin(p);
-            mr1.start();
-      }
-
-  		for (String n : nonPrimes) //For each composite
-      {
-          mr1=new MillerRabin(n);
-          mr1.start();
-
-
-      }
-  }
-
-	MillerRabin(String in){
-		testComposite=new BigInteger(in);
-
+	public static boolean isProbablePrime(BigInteger n, int t) //Used by SemiPrime.java
+	{
+			testNumber = n; //Assign input
+			threads = t; //Assign input
+			return isProbablePrime(); //Run test & return results
 	}
 
-	public void start () {
-        System.out.println("Starting new thread for input " +  testComposite );
-        if (t == null) {
-           t = new Thread (this);
-           t.start ();
-        }
-     }
-
-	@Override
-	public void run() {
-		if(isProbablePrime(testComposite, degreeOfCertainty))
-        {
-            System.out.println(testComposite + " is probably prime");
-        }
-        else
-        {
-            System.out.println(testComposite + " is composite");
-        }
-
+	public static boolean runFromDriver(BigInteger n, int t) //Used by Driver
+	{
+			testNumber = n; //Assign input
+			threads = t; //Assign input
+			return isProbablePrime(); //Run test & return results
 	}
 }

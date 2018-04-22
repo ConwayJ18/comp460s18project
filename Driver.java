@@ -6,57 +6,85 @@ import src.semiprime.*;
 import src.dixon.*;
 import src.pollardrho.*;
 import src.logicalmatrix.*;
+import java.util.concurrent.TimeUnit;
 
 class Driver {
+
+  //Start clock
+  public static long startTime;
+  public static long endTime;
+  public static long timeElapsedMillis;
+  public static long timeElapsedSeconds;
 
     public static void main(String[] args)
     {
         boolean running = true;
-        BigInteger MAX_Dixon = new BigInteger("180250");
-        //BigInteger MAX_PollardRho = new BigInteger("0");
+        Scanner kbReader = new Scanner(System.in);
+        int threads = 0;
+        while(threads < 1 || threads > 8) //Make sure it's a reasonable number of cores
+        {
+            System.out.println("Please enter the number of cores (1-8) available. To quit, type 0: "); //Ask for number of threads
+            threads = kbReader.nextInt(); //Call that number "threads"
+        }
 
         while(running)
         {
-            Scanner kbReader = new Scanner(System.in);
             System.out.println("Please enter a number for factor testing. To quit, type 0: "); //Ask for test number
-            BigInteger testFactor = kbReader.nextBigInteger(); //Call that number "testFactor"
-            if(testFactor.equals(BigInteger.ZERO))
+            BigInteger testNumber = kbReader.nextBigInteger(); //Call that number "testNumber"
+            if(testNumber.equals(BigInteger.ZERO)) //If 0 then quit
             {
                 System.out.println("Program terminated.");
                 running=false;
                 break;
             } else
             {
-                boolean isComposite = !MillerRabin.isProbablePrime(testFactor, 40);
-                System.out.println(testFactor + " is composite? " + isComposite); //Test for primality
-                if(isComposite)
+                System.out.println("-----MILLER-RABIN PRIMALITY TEST-----"); //Run Miller-Rabin
+                startTime = System.currentTimeMillis();
+                boolean isComposite = !MillerRabin.runFromDriver(testNumber, threads);
+                System.out.println(testNumber + " is composite? " + isComposite);
+                endTime = System.currentTimeMillis();
+                timeElapsedMillis = TimeUnit.MILLISECONDS.toMillis(endTime - startTime);
+                System.out.println("This calculation took " + timeElapsedMillis + " milliseconds."); //Print time
+                if(isComposite) //If composite
                 {
-                  System.out.println(testFactor + " is semi-prime? " + SemiPrime.runFromDriver(testFactor)); //Run SemiPrime
-                  System.out.println("The factors of " + testFactor + " via Pollard-Rho are " + PollardRho.runFromDriver(testFactor)); //Run PollardRho
-                  if(testFactor.compareTo(MAX_Dixon) <= 0)
-                  {
-                    System.out.println("The factors of " + testFactor + " via Dixon on a single thread are " + DixonSingleThread.runFromDriver(testFactor)); //Run DixonSingleThread
-                    //System.out.println("The factors of " + testFactor + " via Dixon on multiple threads are " + Dixon.runFromDriver(testFactor)); //Run DixonSingleThread
-                  }
-                  else
-                  {
-                    System.out.println("The test number is too large for our Dixon algorithm.");
-                  }
+                  System.out.println("-----SEMI-PRIME TEST-----"); //Run Semi-Prime
+                  startTime = System.currentTimeMillis();
+                  System.out.println(testNumber + " is semi-prime? " + SemiPrime.runFromDriver(testNumber, threads));
+                  endTime = System.currentTimeMillis();
+                  timeElapsedMillis = TimeUnit.MILLISECONDS.toMillis(endTime - startTime);
+                  System.out.println("This calculation took " + timeElapsedMillis + " milliseconds."); //Print time
+                  System.out.println("-----POLLARD-RHO FACTORIZATION ALGORITHM-----"); //Run Pollard's Rho
+                  startTime = System.currentTimeMillis();
+                  System.out.println("The factors of " + testNumber + " via Pollard-Rho are " + PollardRho.runFromDriver(testNumber));
+                  endTime = System.currentTimeMillis();
+                  timeElapsedMillis = TimeUnit.MILLISECONDS.toMillis(endTime - startTime);
+                  System.out.println("This calculation took " + timeElapsedMillis + " milliseconds."); //Print time
+                  System.out.println("-----DIXON FACTORIZATION ALGORITHM-----"); //Run Dixon
+                  startTime = System.currentTimeMillis();
+                  System.out.println("The factors of " + testNumber + " via Dixon are " + Dixon.runFromDriver(testNumber, threads));
+                  endTime = System.currentTimeMillis();
+                  timeElapsedMillis = TimeUnit.MILLISECONDS.toMillis(endTime - startTime);
+                  System.out.println("This calculation took " + timeElapsedMillis + " milliseconds."); //Print time
                 }
                 else
                 {
-                  System.out.println("The number is prime and thus cannot be semi-prime. It's factors are 1 & itself.");
+                  System.out.println("The number is prime and thus cannot be semi-prime. It's factors are 1 & itself."); //If prime, cannot factor
                 }
             }
-            System.out.println("Please enter a number for matrix testing. To quit, type 0: "); //Ask for test number
-            int testMatrix = kbReader.nextInt();
-            if(testMatrix == 0)
+            System.out.println("Please enter a number for matrix testing. To quit, type 0: "); //Ask for matrix dimension
+            int matrixSize = kbReader.nextInt();
+            if(matrixSize == 0) //If 0 then quit
             {
                 System.out.println("Program terminated.");
                 running=false;
             } else
             {
-                LogicalMatrixMultiply.runFromDriver(testMatrix);
+              System.out.println("-----LOGICAL MATRIX MULTIPLICATION-----"); //Run matrix multiplication
+              startTime = System.currentTimeMillis();
+              LogicalMatrixMultiply.runFromDriver(matrixSize, threads);
+              endTime = System.currentTimeMillis();
+              timeElapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+              System.out.println("This calculation took " + timeElapsedSeconds + " seconds."); //Print time
             }
 
         }
