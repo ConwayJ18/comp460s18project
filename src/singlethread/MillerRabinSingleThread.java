@@ -6,6 +6,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Class used to run Millar Rabin Algorithm on a single thread
+ */
 public class MillerRabinSingleThread {
 
 	private static final BigInteger ZERO = BigInteger.ZERO; //BigInteger copy of ZERO

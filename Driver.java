@@ -8,6 +8,9 @@ import src.pollardrho.*;
 import src.logicalmatrix.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class Used to run all aspects of the program at once
+ */
 class Driver {
 
   //Start clock

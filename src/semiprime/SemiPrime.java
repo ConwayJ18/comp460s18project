@@ -4,6 +4,10 @@ import java.math.*;
 import java.util.Random;
 import src.millerrabin.*;
 
+/**
+ * The class to run semiprme testing
+ */
+
 public class SemiPrime extends Thread {
     private static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
     private static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
@@ -14,11 +18,17 @@ public class SemiPrime extends Thread {
     private static boolean result = false; //Shared among threads
     private int threadNumber;
 
+    /**
+     * @param threadNumber
+     */
     private SemiPrime(int threadNumber) //Thread constructor
     {
        this.threadNumber=threadNumber;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
     public void run() //The part of the code that's multithreaded
     {
         BigInteger i = BigInteger.valueOf(threadNumber+2); //Initialize the incrementer
@@ -46,6 +56,9 @@ public class SemiPrime extends Thread {
         }
     }
 
+    /**
+     * @return
+     */
     private static boolean isSemiPrime() //The actual test
     {
         if(!MillerRabin.isProbablePrime(testNumber, threads)) //Is it composite?
@@ -57,6 +70,10 @@ public class SemiPrime extends Thread {
         return false; //Else return false
     }
 
+    /**
+     * @param n
+     * @return
+     */
     private static BigInteger cubeRoot(BigInteger n) //Calculates cube roots
     {
         BigDecimal nCopy = new BigDecimal(n); //Create copy of n
@@ -75,6 +92,10 @@ public class SemiPrime extends Thread {
         return tempCbrt;  //Finally return r
     }
 
+    /**
+     * @param n
+     * @return
+     */
     private static boolean manyFactors(BigInteger n) //How many factors does n have?
     {
             SemiPrime[] thrd = new SemiPrime[threads];
@@ -99,6 +120,11 @@ public class SemiPrime extends Thread {
             return result;
     }
 
+    /**
+     * @param n
+     * @param t
+     * @return
+     */
     public static boolean runFromDriver(BigInteger n, int t) //Called from Driver
     {
         testNumber = n; //Assign input

@@ -3,6 +3,9 @@ package src.logicalmatrix;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class for Logical Matrix Multiplication
+ */
 public class LogicalMatrixMultiply extends Thread {
   private static boolean[][] A; //Matrix A
   private static boolean[][] B; //Matrix B
@@ -11,12 +14,19 @@ public class LogicalMatrixMultiply extends Thread {
   private static int threads; //Number of threads
   private int threadNumber;
 
-  private LogicalMatrixMultiply(int threadNumber)
+  /**
+ * @param threadNumber
+ */
+private LogicalMatrixMultiply(int threadNumber)
   {
      this.threadNumber=threadNumber; //Thread constructor
   }
 
-  public void run()
+  
+/* (non-Javadoc)
+ * @see java.lang.Thread#run()
+ */
+public void run()
   {
       for (int i = threadNumber; i < matrixSize; i+= threads) { //Row of A
            for (int j = 0; j < matrixSize; j++) { //Column of B
@@ -29,7 +39,7 @@ public class LogicalMatrixMultiply extends Thread {
            }
        }
   }
-
+	
   private static void print(){ //Used to print for testing. Not normally necessary.
     for (int i = 0; i < C.length; i++) {
            for (int j = 0; j < A[0].length; j++) {
@@ -46,7 +56,8 @@ public class LogicalMatrixMultiply extends Thread {
            System.out.println();
     }
   }
-
+  
+  
   public static void runFromDriver(int n, int t)
   {
     threads = t; //Number of threads
