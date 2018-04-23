@@ -4,11 +4,19 @@ import java.math.*;
 import java.util.Random;
 import src.millerrabin.*;
 
-public class SemiPrime {
+/**
+ * The class to run Semi-Prime Testing on a single thread
+ *
+ */
+public class SemiPrimeSingleThread {
     public static BigDecimal THREE_D=BigDecimal.valueOf(3); //Needed in cubeRoot calculation
     public static int UP=BigDecimal.ROUND_HALF_UP; //Rounds things up, also needed in cubeRoot
     public static int degreeOfCertainty = 40; //Higher numbers means more certainty
 
+    /**
+     * @param n
+     * @return
+     */
     public static boolean isSemiPrime(BigInteger n) //The actual test
     {
             if(!MillerRabin.isProbablePrime(n, degreeOfCertainty)) //Is it composite?
@@ -19,6 +27,10 @@ public class SemiPrime {
             return false; //Else return false
     }
 
+    /**
+     * @param n
+     * @return
+     */
     public static BigInteger cubeRoot(BigInteger n) //Calculates cube roots
     {
         BigDecimal nCopy = new BigDecimal(n); //Create copy of n
@@ -37,6 +49,10 @@ public class SemiPrime {
         return result;  //Finally return r
     }
 
+    /**
+     * @param n
+     * @return
+     */
     public static boolean manyFactors(BigInteger n) //How many factors does n have?
     {
             BigInteger cbrt = cubeRoot(n); //First calculate the cube root
@@ -68,7 +84,10 @@ public class SemiPrime {
             return false; //If we make it this far, there's only 2 factors, both of which are prime
     }
 
-  public static void main(String[] args) //We'll use the main method for testing. Actual main() is in Driver.java
+  /**
+ * @param args
+ */
+public static void main(String[] args) //We'll use the main method for testing. Actual main() is in Driver.java
   {
         String[] semiPrimes = { "4", "6", "3901", "12193", "8602133", "48883987" }; //We know these are semi-prime
         String[] nonSemis = { "5", "7", "5581", "902937", "1295739", "10483595" }; //We know these are not

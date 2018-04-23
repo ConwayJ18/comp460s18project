@@ -3,9 +3,16 @@ package src.pollardrho;
 import java.math.BigInteger;
 import java.util.Random;
 
+/**
+ * Class tom implement Pollard's rho algorithm
+ */
 public class PollardRho {
 
-  private static String pollardRho(BigInteger n) {
+  /**
+ * @param n
+ * @return
+ */
+private static String pollardRho(BigInteger n) {
       BigInteger a = new BigInteger("2"); //Set a = 2
       BigInteger b = new BigInteger("2"); //Set b = 2
       BigInteger d = BigInteger.ONE; //Set d = 1
@@ -36,6 +43,10 @@ public class PollardRho {
       return "" + d + " x " + factor; //Print d and the other factor
   }
 
+	/**
+	 * @param n
+	 * @return
+	 */
 	public static String runFromDriver(BigInteger n) //Called from Driver
   {
     BigInteger testNumber = n; //Assign input

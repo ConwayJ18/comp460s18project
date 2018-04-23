@@ -2,14 +2,21 @@ package src.singlethread;
 
 import java.math.BigInteger;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class MillerRabin {
+/**
+ * Class used to run Millar Rabin Algorithm on a single thread
+ */
+public class MillerRabinSingleThread {
 
 	private static final BigInteger ZERO = BigInteger.ZERO; //BigInteger copy of ZERO
 	private static final BigInteger ONE = BigInteger.ONE; //Same for ONE
 	private static final BigInteger TWO = new BigInteger("2"); //TWO
 	private static final BigInteger THREE = new BigInteger("3"); //And THREE
 	private static final int degreeOfCertainty = 40; //Higher numbers reduce chance of false-positive
+	private static boolean result = false;
 
 	public static boolean isProbablePrime(BigInteger n, int degreeOfCertainty) //The actual calculator
 	{
@@ -28,34 +35,54 @@ public class MillerRabin {
     			s++;	//Increment exponent
     			d = d.divide(TWO); //Divide by 2
   		}
+  		
+  		final BigInteger dFinal = d;
+  		final int sFinal = s;
+  		CountDownLatch countDownLatch = new CountDownLatch(degreeOfCertainty);
+  		ExecutorService es = Executors.newFixedThreadPool(5);
 
 			//Start multithread
 			//Now choose k=degreeOfCertainty random numbers between 2 and n-2
-      for (int i = 0; i < degreeOfCertainty; i++) //For each of those numbers
-			{
-    			BigInteger a = uniformRandom(TWO, n.subtract(ONE)); //Assign it a value
-    			BigInteger x = a.modPow(d, n); //Calculate x = a^d mod n
-
-          if (x.equals(ONE) || x.equals(n.subtract(ONE))) //If x=1 or x=n-1
-    				  continue; //Stop here, move on to the next random number
-
-          int r;
-    			for (r=0; r < s; r++) //This part runs s-1 times
-					{
-      				x = x.modPow(TWO, n); //Calculate (new) x = (old) x^2 mod n
-
-      				if (x.equals(ONE)) //If this new x=1
-      					   return false;	//The number is composite
-
-      				if (x.equals(n.subtract(ONE))) //If this new x=n-1
-      					   break; //Stop here, move on to next random number
-    			}
-    			if (r == s) //If for some k, no r made x=n-1, n is composite
-    				  return false;
-  		}
+  		es.submit(new Runnable() {
+			  @Override
+			  public void run() {
+            try {
+            	System.out.println("New thread spwaned");
+            	
+				      for (int i = 0; i < degreeOfCertainty; i++) //For each of those numbers
+							{
+				    			BigInteger a = uniformRandom(TWO, n.subtract(ONE)); //Assign it a value
+				    			BigInteger x = a.modPow(dFinal, n); //Calculate x = a^d mod n
+				
+				    			if (x.equals(ONE) || x.equals(n.subtract(ONE))) //If x=1 or x=n-1
+				    				  continue; //Stop here, move on to the next random number
+				
+				    			int r;
+				    			for (r=0; r < sFinal; r++) //This part runs s-1 times
+									{
+				      				x = x.modPow(TWO, n); //Calculate (new) x = (old) x^2 mod n
+				
+				      				if (x.equals(ONE)) //If this new x=1
+				      					   result= false;	//The number is composite
+				
+				      				if (x.equals(n.subtract(ONE))) //If this new x=n-1
+				      					   break; //Stop here, move on to next random number
+				    			}
+				    			if (r == sFinal) //If for some k, no r made x=n-1, n is composite
+				    				  result= false;
+				    		}	
+				  	}
+            
+            finally {
+                countDownLatch.countDown();
+            		}
+			  }
+  		});
 			//End multithread
-
-  		return true; //If we make it all the way here, n is probably prime
+  		if (result == false)
+  			return result;
+  		else
+  			return true; //If we make it all the way here, n is probably prime
 	}
 
 	private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) //Used to generate random numbers

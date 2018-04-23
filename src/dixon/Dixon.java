@@ -6,6 +6,10 @@ import java.math.*;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Class to implement Dixon Algorithm
+ *
+ */
 public class Dixon extends Thread {
 
     public static int level = 0; //Tracks number of attempts generating factor base
@@ -19,11 +23,17 @@ public class Dixon extends Thread {
     private static int threads; //Number of threads
     private int threadNumber;
 
+    /**
+     * @param threadNumber
+     */
     private Dixon(int threadNumber)
     {
         this.threadNumber = threadNumber; //Thread constructor
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
     public void run() //Multithreaded code
     {
         try {
@@ -52,6 +62,9 @@ public class Dixon extends Thread {
         }
     }
 
+    /**
+     * Method to Load Primes
+     */
     private static void loadPrimes() {
         //Start multithreading
         Dixon[] thrd = new Dixon[threads];
@@ -72,6 +85,11 @@ public class Dixon extends Thread {
         //End multithreading
     }
 
+    /**
+     * @param n
+     * @param factorBase
+     * @return
+     */
     private static String dixonsAlgorithm(BigInteger n, BigInteger factorBase) {
         level++; //Increment attempts
         Random generator = new Random();
@@ -127,6 +145,11 @@ public class Dixon extends Thread {
         return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n); //Combines equations and returns results
     }
 
+    /**
+     * @param equations
+     * @param arraySize
+     * @return
+     */
     private static int[][] mod2Eqs(int[][] equations, int arraySize) { //Calculates equations mod 2
         for (int i = 0; i < arraySize; i++) {
             for (int j = 0; j < arraySize; j++) {
@@ -140,6 +163,15 @@ public class Dixon extends Thread {
         return equations;
     }
 
+    /**
+     * @param xVals
+     * @param equations
+     * @param cAdjusted
+     * @param iAdjusted
+     * @param arraySize
+     * @param n
+     * @return
+     */
     private static String combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
         for (int i = 0; i < arraySize; i++) { //Goes down
             BigInteger x = BigInteger.ONE;
@@ -176,6 +208,10 @@ public class Dixon extends Thread {
         return "unable to be found";
     }
 
+    /**
+     * @param row
+     * @return
+     */
     private static boolean isRowEmpty(int[] row) { //Checks if a row is empty
         for (int i = 0; i < row.length; i++) {
             if (row[i] != 0) {
@@ -185,6 +221,10 @@ public class Dixon extends Thread {
         return true;
     }
 
+    /**
+     * @param size
+     * @return
+     */
     private static int[][] identityMatrix(int size) { //Creates an appropriately sized identity
         int[][] matrix = new int[size][size];
         for (int i = 0; i < size; i++) {
@@ -195,6 +235,10 @@ public class Dixon extends Thread {
         return matrix;
     }
 
+    /**
+     * @param n
+     * @return
+     */
     private static BigInteger sqrt(BigInteger n) { //Calculate sqrt, the fast way
         BigInteger a = BigInteger.ONE;
         BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
@@ -209,7 +253,16 @@ public class Dixon extends Thread {
         return a.subtract(BigInteger.ONE);
     }
 
-    // performs Gaussian elimination mod 2 on ROWSxCOLS matrix and ROWSxROWS identity matrix
+ 
+    /**
+     * @param matrix
+     * @param iMatrix
+     * @param ROWS
+     * @param COLS
+     * @param i
+     * performs Gaussian elimination mod 2 on ROWSxCOLS matrix and ROWSxROWS identity matrix
+     * @return
+     */
     private static int[][] gaussianEliminationMod2(int[][] matrix, int[][] iMatrix, int ROWS, int COLS, boolean i) {
         for (int col = 0; col < COLS; col++) {
             // first get a 1 in the current diagonal entry
@@ -258,6 +311,10 @@ public class Dixon extends Thread {
         }
     }
 
+    /**
+     * @param val
+     * @return
+     */
     private static double logBigInteger(BigInteger val) { //Calculates log of the BigInteger, the fast way
         int blex = val.bitLength() - 1022; //Any value from 60 - 1023 is cool
         if (blex > 0)
@@ -266,6 +323,11 @@ public class Dixon extends Thread {
         return blex > 0 ? res + blex * LOG2 : res;
     }
 
+    /**
+     * @param n
+     * @param t
+     * @return
+     */
     public static String runFromDriver(BigInteger n, int t)
     {
             testNumber = n; //Assign input

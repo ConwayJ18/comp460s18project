@@ -3,6 +3,11 @@ package src.millerrabin;
 import java.math.BigInteger;
 import java.util.Random;
 
+/**
+ * 
+ * Class implementing Miller Rabin Algorithm
+ * 
+ */
 public class MillerRabin extends Thread {
 
 	private static final BigInteger ZERO = BigInteger.ZERO; //BigInteger copy of ZERO
@@ -17,11 +22,17 @@ public class MillerRabin extends Thread {
 	private static BigInteger d; //Also needed by threads
 	public int threadNumber;
 
+	/**
+	 * @param threadNumber
+	 */
 	private MillerRabin(int threadNumber) //Tread constructor
 	{
 		this.threadNumber = threadNumber;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() //Multithreaded part of code
 	{
 			for (int i = threadNumber; i < degreeOfCertainty; i+=threads) //Run degreeOfCertainty times
@@ -54,7 +65,11 @@ public class MillerRabin extends Thread {
 			}
 	}
 
-	private static boolean isProbablePrime() //The actual calculator
+	/**
+	 * @return boolean
+	 * Method -The actual calculator
+	 */
+	private static boolean isProbablePrime()
 	{
 			//The first two are special cases
   		if (testNumber.compareTo(ONE) == 0) //Is the number 1?
@@ -92,7 +107,13 @@ public class MillerRabin extends Thread {
   		return result; //Result with be true if probably prime
 	}
 
-	private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) //Used to generate random numbers
+	/**
+	 * @param bottom
+	 * @param top
+	 * @return BigInteger
+	 * Method Used to generate random numbers
+	 */
+	private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) 
   {
   		Random rnd = new Random();
   		BigInteger res;
@@ -102,14 +123,26 @@ public class MillerRabin extends Thread {
   		return res;
 	}
 
-	public static boolean isProbablePrime(BigInteger n, int t) //Used by SemiPrime.java
+	/**
+	 * @param n
+	 * @param t
+	 * @return 
+	 * Method Used by SemiPrime.java
+	 */
+	public static boolean isProbablePrime(BigInteger n, int t) 
 	{
 			testNumber = n; //Assign input
 			threads = t; //Assign input
 			return isProbablePrime(); //Run test & return results
 	}
 
-	public static boolean runFromDriver(BigInteger n, int t) //Used by Driver
+	/**
+	 * @param n
+	 * @param t
+	 * @return
+	 * Method Used by Driver
+	 */
+	public static boolean runFromDriver(BigInteger n, int t) 
 	{
 			testNumber = n; //Assign input
 			threads = t; //Assign input

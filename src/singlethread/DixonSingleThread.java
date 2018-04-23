@@ -6,7 +6,11 @@ import java.math.*;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Dixon {
+/**
+ * Class used to run Dixon Algorithm on a single thread
+ *
+ */
+public class DixonSingleThread {
 
     public static int level = 0;
     public static final int RANDOM_POWER = 15;
@@ -14,6 +18,10 @@ public class Dixon {
     public static int smoothnessBound;
     public static BigInteger[] primes = new BigInteger[100000];
 
+    /**
+     * @param number
+     * @return
+     */
     public static String runFromDriver(BigInteger number) {
             loadPrimes();
             double logN = logBigInteger(number);
@@ -27,6 +35,9 @@ public class Dixon {
             return dixonsAlgorithm(number, factorBase);
     }
 
+    /**
+     * 
+     */
     public static void loadPrimes() {
         try {
             Scanner input = new Scanner(new File("src/dixon/primes.txt"));
@@ -43,6 +54,11 @@ public class Dixon {
         }
     }
 
+    /**
+     * @param n
+     * @param factorBase
+     * @return
+     */
     public static String dixonsAlgorithm(BigInteger n, BigInteger factorBase) {
         level++;
         Random generator = new Random();
@@ -98,6 +114,11 @@ public class Dixon {
         return combineEqs(xVals, equations, cAdjusted, iAdjusted, arraySize, n);
     }
 
+    /**
+     * @param equations
+     * @param arraySize
+     * @return
+     */
     public static int[][] mod2Eqs(int[][] equations, int arraySize) {
         for (int i = 0; i < arraySize; i++) {
             for (int j = 0; j < arraySize; j++) {
@@ -111,6 +132,15 @@ public class Dixon {
         return equations;
     }
 
+    /**
+     * @param xVals
+     * @param equations
+     * @param cAdjusted
+     * @param iAdjusted
+     * @param arraySize
+     * @param n
+     * @return
+     */
     public static String combineEqs(BigInteger[] xVals, int[][] equations, int[][] cAdjusted, int[][] iAdjusted, int arraySize, BigInteger n) {
         for (int i = 0; i < arraySize; i++) { //Goes down
             BigInteger x = BigInteger.ONE;
@@ -147,6 +177,10 @@ public class Dixon {
         return "";
     }
 
+    /**
+     * @param row
+     * @return
+     */
     public static boolean isRowEmpty(int[] row) {
         for (int i = 0; i < row.length; i++) {
             if (row[i] != 0) {
@@ -156,6 +190,10 @@ public class Dixon {
         return true;
     }
 
+    /**
+     * @param size
+     * @return
+     */
     public static int[][] identityMatrix(int size) {
         int[][] matrix = new int[size][size];
         for (int i = 0; i < size; i++) {
@@ -166,6 +204,10 @@ public class Dixon {
         return matrix;
     }
 
+    /**
+     * @param n
+     * @return
+     */
     public static BigInteger sqrt(BigInteger n) {
         BigInteger a = BigInteger.ONE;
         BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
@@ -181,6 +223,14 @@ public class Dixon {
     }
 
     // performs Gaussian elimination mod 2 on ROWSxCOLS matrix and ROWSxROWS identity matrix
+    /**
+     * @param matrix
+     * @param iMatrix
+     * @param ROWS
+     * @param COLS
+     * @param i
+     * @return
+     */
     public static int[][] gaussianEliminationMod2(int[][] matrix, int[][] iMatrix, int ROWS, int COLS, boolean i) {
         for (int col = 0; col < COLS; col++) {
             // first get a 1 in the current diagonal entry
@@ -229,6 +279,10 @@ public class Dixon {
         }
     }
 
+    /**
+     * @param val
+     * @return
+     */
     public static double logBigInteger(BigInteger val) {
         int blex = val.bitLength() - 1022; // any value in 60..1023 is ok
         if (blex > 0)
